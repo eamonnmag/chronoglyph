@@ -15,9 +15,6 @@ __author__ = 'eamonnmaguire'
 
 
 class AnalysisEngine(object):
-
-
-
     def add_ngram_to_aggregated_sets(self, aggregated_sets, metrics, file_id, items, time_series, window_size, mapping):
         occurrences = {}
 
@@ -177,7 +174,7 @@ class AnalysisEngine(object):
         return parallel_coords_files
 
     def write_summaries(self, aggregated_sets, file_id, items, metrics, time_series, values, values_adv, window_size,
-                        alphabet_size, approximation, mapping):
+                        alphabet_size, approximation, mapping=None):
 
         a = 97
         alphabet = []
@@ -202,17 +199,6 @@ class AnalysisEngine(object):
         # self.generate_paper_slice_metrics(values)
         time_series["time-series"].append(
             {"file": file_id, "min": numpy.min(values), "max": numpy.max(values), "series": values})
-        # write main file
-        # summary_file = open(
-        # OUTPUT_DIR + file_id + '_summary_w' + str(window_size) + '.json',
-        # 'w')
-        # summary_file.write(simplejson.dumps(data_output_representation))
-        # summary_file.close()
-        data_output_representation = {"Name": file_id, "data": values_adv}
-        # write additional file required for rickshaft.
-        # summary_file = open(OUTPUT_DIR + file_id + '_summary_rickshaft.json', 'w')
-        # summary_file.write(simplejson.dumps(data_output_representation))
-        # summary_file.close()
 
         return aggregated_sets, time_series
 
@@ -299,14 +285,20 @@ class AnalysisEngine(object):
 
             for time_series_result in time_series_results:
                 series_metadata_details = series_metadata[time_series_result]
-                aggregated_sets, time_series = self.write_summaries(aggregated_sets, series_metadata_details["name"],
+
+                mapping = None
+                if "mapping" in series_metadata_details:
+                    mapping = series_metadata_details["mapping"]
+
+                aggregated_sets, time_series = self.write_summaries(aggregated_sets,
+                                                                    series_metadata_details["name"],
                                                                     time_series_results[time_series_result],
                                                                     metrics, time_series,
                                                                     series_metadata_details["values"],
                                                                     series_metadata_details["values_adv"],
                                                                     window_size, alphabetSize,
                                                                     series_metadata_details["series"],
-                                                                    series_metadata_details["mapping"])
+                                                                    mapping)
 
         count_cut_off = int(analysis_model.cutoff)
         toRemove = []
