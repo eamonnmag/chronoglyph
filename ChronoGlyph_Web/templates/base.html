@@ -1,0 +1,101 @@
+{% load template_utils %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chronanalisi</title>
+    <link href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}assets/css/style.css" type="text/css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}assets/css/vis/parallel-coords.css" type="text/css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}assets/css/font.css" type="text/css" rel="stylesheet">
+
+
+</head>
+<body>
+
+<div class="top-bar">
+
+    <div id="logo" class="pull-left"><img src="{{ STATIC_URL }}assets/img/va.svg" height="43px"/></div>
+
+    <div id="menu" class="pull-right">
+        <ul>
+            <li id="build"><img src="{{ STATIC_URL }}assets/img/data.svg" height="37px"
+                                style="margin-top: 2px"></span>
+                <!--<ul class="sub-menu">-->
+                <!--<li><span class="icon-plus" style="font-size: 1.4em"></span> <br/>Select Data</li>-->
+                <!--<li><span class="icon-remove" style="font-size: 1.4em"></span><br/> Clear Data</li>-->
+                <!--</ul>-->
+            </li>
+            <li class="bg-blue-1">
+                <div class="icon-th-large" style="font-size: 2.1em; color: #fff; margin-top: 8px"></div>
+            </li>
+            <li>
+                <div class="icon-cogs" style="font-size: 2.3em; color: #fff; margin-top: 5px"></div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="content">
+
+    <div class="clearfix"></div>
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+<div class="footer-bar">
+
+    <div id="footer-decor">
+        <ul>
+            <li class="bg-blue-1">&nbsp;</li>
+            <li class="bg-blue-2">&nbsp;</li>
+            <li class="bg-blue-3">&nbsp;</li>
+        </ul>
+    </div>
+
+    <div id="footer-buttons">
+        <ul>
+            <li class="bg-blue-1">About</li>
+            <li class="bg-blue-2">Team</li>
+            <li class="bg-blue-3">Contact</li>
+        </ul>
+    </div>
+</div>
+
+<div id="parallel-coords-panel" class="hidden parallel-coords-popup">
+    <div id="parallel-coords-param-content"></div>
+
+
+</div>
+
+<div id="node-decision-panel" class="popup hidden">
+    <div id="popup-header">
+        <div id="popup-approximation" class="pull-left"></div>
+        <div onclick="d3.select('.popup').classed('hidden', true)" class="option option-close pull-right">x</div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="pull-left" style="padding: 10px; width: 90px; font-size: .7em; color:#7F8C8D">Corresponding part times
+        series fragments
+    </div>
+    <div class="pull-left" id="popup-approximation-icon" style="width: 70px"></div>
+    <div class="pull-right" id="popup-series"></div>
+    <div class="clearfix"></div>
+    <div id="motif-stats">
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="layout-options pull-right" id="popup-options">
+    </div>
+</div>
+
+</body>
+
+
+
+
+{% block end_additional %}
+{% endblock %}
+
+</html>

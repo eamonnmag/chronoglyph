@@ -1,0 +1,207 @@
+{% extends 'templates/base.html' %}
+{% load template_utils %}
+{% block content %}
+
+
+    <div id="selected-motifs" class="pull-left">
+        <div class="network-layout-option">Models</div>
+
+        <div class="formulai" style="margin-top: 10px">
+
+            {% for analysis in analyses %}
+                <div class="model-option {% ifequal analysis.model_name latest_analysis.model_name%}active-model{% endifequal %}" id="{{ analysis.model_name }}">
+
+                    <div class="pull-left" style="margin-top: 4px; margin-left: 4px">{{ analysis.model_name }}<span>(&omega;
+                    = {{ analysis.window_size }}, &alpha;
+                    = {{ analysis.alphabet_size }})</span></div>
+
+                     <div class="btn btn-sm btn-default pull-right" onclick='ChronoAnalisi.functions.loadModel("{{ analysis.model_name }}")'  style="padding: 2px 5px;">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </div>
+
+                    <div class="btn btn-sm btn-danger pull-right" onclick='ChronoAnalisi.functions.deleteModel("{{ analysis.model_name }}")' style="padding: 2px 5px; margin-right: 2px">
+                        <span class="glyphicon glyphicon-remove"
+                         style="color: #fff;"></span>
+                    </div>
+
+
+
+                </div>
+            {% endfor %}
+
+
+        </div>
+
+        <div class="basket-footer">
+           <div class="pull-right white-button btn btn-default btn-lg" style="margin-right: 1px"
+                 onclick="ChronoAnalisi.functions.addModel()">Add New Model
+            </div>
+
+            <div class="network-layout-option" style="margin-top: 28px">Refinement</div>
+
+            <div class="formula">
+
+                <ul align="center" id="formulai-list">
+
+                </ul>
+
+                <div align="center"><span class="addition icon-plus"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-vis pull-left" style="padding-top: 20px">
+        <div class="network-layout-option pull-left">
+            Motifs arranged by
+            <span id="current-layout" style="color: #D25627; text-decoration:underline; cursor: pointer;"
+                  onclick="ChronoAnalisi.functions.showOptions()">distance</span>
+        </div>
+
+        <div id="layout-options" class="hidden layout-options pull-left">
+            <ul>
+                <li>Choose a layout strategy:</li>
+                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('distance')">Distance</li>
+                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('selection')">Selection
+                </li>
+                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('containment')">Containment
+                </li>
+                <li class="option" onclick="ChronoAnalisi.functions.hideOptions()">Close</li>
+            </ul>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div id="network" style="float: left;">
+            <!-- this is where the network connecting glyphs will go... -->
+        </div>
+    </div>
+
+    <div id="time-series" class="pull-right">
+        <div class="network-layout-option">Original Time Series</div>
+        <div id="time-series-plots" style="margin-top: 10px"></div>
+    </div>
+
+
+    <div class="clearfix"></div>
+    <br/><br/>
+
+    <div class="parallel-coords">
+        <div id="parallel-coords"></div>
+    </div>
+
+    {% include 'templates/modals/analysis.html' %}
+{% endblock %}
+
+{% block end_additional %}
+    {% raw %}
+        <script id="add-parameter-template" type="text/x-handlebars-template">
+
+            <div class="add-parameter-header">Refine <strong>{{ this.parameter_name }}</strong> parameter</div>
+
+            <div class="formula filter">
+                <div>
+                    <input id="min-value" class="value" style="width:40px" value="{{ this.min }}"/>
+                    <span class="value-operation"><</span>
+                    <span class="val-placeholder">x</span>
+                    <span class="value-operation"><</span>
+                    <input id="max-value" class="value" style="width:40px" value="{{ this.max }}"/></span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+
+                <p>Accept or reject all motifs in this range?</p>
+
+                <div class="pull-left white-button" style="margin-right: 1px"
+                     onclick="$('.parallel-coords-popup').addClass('hidden')">Dismiss
+                </div>
+
+                <div class="pull-left white-button orange-button" style="margin-right: 1px"
+                     onclick="ChronoAnalisi.functions.addRefinement('{{ this.parameter_name }}','reject')">Reject All
+                </div>
+
+                <div class="pull-left white-button green-button" style="margin-right: 1px"
+                     onclick="ChronoAnalisi.functions.addRefinement('{{ this.parameter_name }}','accept')">Accept All
+                </div>
+            </div>
+
+        </script>
+
+        <script id="parameter-item-template" type="text/x-handlebars-template">
+            <li class="filter">
+                <div>
+                    <div class="white-button {{ this.buttontype }} pull-left"
+                         style="margin-top:2px">{{ this.operation }} <span
+                            class="glyphicon glyphicon-chevron-down" style="font-size: .7em"></span></div>
+                    <p style="margin-left: 9px">{{ this.parameter_name }}</p>
+                    <input class="value" value="{{ this.min }}"/>
+                    <span class="value-operation"><</span>
+                    <span class="val-placeholder">{{ this.symbol }}</span>
+                    <span class="value-operation"><</span>
+                    <input class="value" value="{{ this.max }}"/>
+                </div>
+            </li>
+        </script>
+
+        <script id="motif-stats-template" type="text/x-handlebars-template">
+            {{#each metrics}}
+            <div class="metric">
+                <span class="name">{{ this.name }}</span><br/>
+                <span class="value">{{ this.value }}</span>
+            </div>
+            {{/each}}
+        </script>
+
+        <script id="popup-options-template" type="text/x-handlebars-template">
+            <ul>
+                <li class="option option-green"
+                    onclick="javascript:ChronoAnalisi.functions.toggleItemVisible('{{ this.id }}', '{{ this.name }}', {{ this.count }}, 1); d3.select('.popup').classed('hidden', true)">
+                    Accept
+                </li>
+                <li class="option option-orange"
+                    onclick="javascript:ChronoAnalisi.functions.toggleItemVisible('{{ this.id }}', '{{ this.name }}', {{ this.count }}, -1); d3.select('.popup').classed('hidden', true)">
+                    Reject
+                </li>
+                <li class="option option-grey"
+                    onclick="javascript:ChronoAnalisi.functions.toggleItemVisible('{{ this.id }}', '{{ this.name }}', {{ this.count }}, 0); d3.select('.popup').classed('hidden', true)">
+                    Undefined
+                </li>
+
+            </ul>
+        </script>
+
+        <script id="basket-list-template" type="text/x-handlebars-template">
+            {{#each basket}}
+            <li onmouseover="ChronoAnalisi.functions.toggleHighlightNodeInGraph('{{ this.name }}',true)"
+                onmouseout="ChronoAnalisi.functions.toggleHighlightNodeInGraph('{{ this.name }}',false)">
+                <div class="icon-remove pull-right"
+                     onclick="javascript:ChronoAnalisi.functions.toggleItemVisible('{{ this.id }}', '{{ this.name }}', {{ this.count }}, 0)"
+                     style="color:#D25627; cursor: pointer"></div>
+                <div class="event-icon pull-left" id="motif-{{ this.name }}" style="margin-top: -4px"></div>
+                <div class="event-name pull-left" style="margin-left: 10px; margin-top: -4px">{{ this.name }}<br/>
+
+                    <div class="motif-count">Occurred <strong>{{ this.count }}</strong> times</div>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+            {{/each}}
+        </script>
+    {% endraw %}
+
+    <script src="{{ STATIC_URL }}assets/js/lib/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-select.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}assets/js/lib/handlebars.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/chronanalisi.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/parallel-coords.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/chronanalisi-graph.js"></script>
+
+    <script type="text/javascript">
+        ChronoAnalisi.functions.loadModel("{{ latest_analysis.model_name }}");
+
+        $("select[name='restriction-type-list']").selectpicker({style: 'btn-primary', menuStyle: 'dropdown-inverse'});
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{'abbbb': {
+    35: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'abbbb',
+        'length': 5
+    }
+}, 'ccbbb': {
+    5: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'ccbbb',
+        'length': 5
+    }
+}, 'ccbb': {
+    50: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'ccbb',
+        'length': 4
+    }
+}, 'baaaa': {
+    30: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'baaaa',
+        'length': 5
+    }
+}, 'ccccc': {
+    0: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'ccccc',
+        'length': 5
+    },
+    45: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'ccccc',
+        'length': 5
+    }
+}, 'bcccc': {
+    40: {
+        'repeat_count': 1,
+        'symbolic_approximation': 'bcccc',
+        'length': 5
+    }
+}, 'bbbbb': {
+    10: {
+        'repeat_count': 4,
+        'symbolic_approximation': 'bbbbb',
+        'length': 20
+    }
+}}

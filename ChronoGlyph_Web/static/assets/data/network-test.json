@@ -1,0 +1,176 @@
+{
+    "nodes": [
+        {
+            "id": 400,
+            "label": "abcccef",
+            "approximation": "abcccef",
+            "count": 100,
+            "series": [
+                {
+                    "file": "ecg-1",
+                    "positions": [
+                        [0, 4],
+                        [7, 10]
+                    ]
+                },
+                {
+                    "file": "ecg-2",
+                    "positions": [
+                        [0, 20]
+                    ]
+                }
+            ],
+            "metrics": [
+                {
+                    "name": "Frequency",
+                    "value": 100
+                },
+                {
+                    "name": "Kurtosis",
+                    "value": 0.45
+                },
+                {
+                    "name": "Deviation",
+                    "value": 0.15
+                },
+                {
+                    "name": "Correlation",
+                    "value": 0.96
+                },
+                {
+                    "name": "Length",
+                    "value": 7
+                },
+                {
+                    "name": "Burstiness",
+                    "value": 1.45
+                },
+                {
+                    "name": "Bumpiness",
+                    "value": 1.45
+                },
+                {
+                    "name": "Max Delta",
+                    "value": 15.5
+                },
+                {
+                    "name": "Min Delta",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "id": 401,
+            "label": "abccaef",
+            "approximation": "abccaef",
+            "count": 50
+        },
+        {
+            "id": 402,
+            "label": "abc",
+            "approximation": "abc",
+            "count": 10
+        },
+        {
+            "id": 403,
+            "label": "abb",
+            "approximation": "abb",
+            "count": 5,
+            "series": [
+                {
+                    "file": "ecg-4",
+                    "positions": [
+                        [0, 4],
+                        [7, 10],
+                        [20, 26]
+                    ]
+                },
+                {
+                    "file": "ecg-6",
+                    "positions": [
+                        [0, 5]
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 405,
+            "label": "abbfffa",
+            "approximation": "abbfffa",
+            "count": 5
+        },
+        {
+            "id": 406,
+            "label": "abbafaa",
+            "approximation": "abbafaa",
+            "count": 5
+        },
+        {
+            "id": 407,
+            "label": "abbacefffa",
+            "approximation": "abbacefffa",
+            "count": 2
+        }
+    ],
+    "links": [
+        {
+            "id": 1,
+            "type": "Sequence",
+            "source": 400,
+            "target": 401,
+            "value": 40
+        },
+        {
+            "id": 2,
+            "type": "Sequence",
+            "source": 402,
+            "target": 403,
+            "value": 100
+        },
+
+        {
+            "id": 3,
+            "type": "Sequence",
+            "source": 403,
+            "target": 405,
+            "value": 100
+        },
+        {
+            "id": 4,
+            "type": "Sequence",
+            "source": 403,
+            "target": 407,
+            "value": 100
+        },
+        {
+            "id": 5,
+            "type": "Sequence",
+            "source": 405,
+            "target": 401,
+            "value": 50
+        },
+        {
+            "id": 8,
+            "type": "Sequence",
+            "source": 402,
+            "target": 403,
+            "value": 50
+        },
+        {
+            "id": 6,
+            "type": "Sequence",
+            "source": 401,
+            "target": 405,
+            "value": 600
+        }
+        ,
+        {
+            "id": 7,
+            "type": "Sequence",
+            "source": 406,
+            "target": 407,
+            "value": 100
+        }
+
+    ]
+}

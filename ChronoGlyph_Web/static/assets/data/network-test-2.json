@@ -1,0 +1,81 @@
+{
+    "nodes": [
+        {
+            "id": 400,
+            "label": "abcccef",
+            "approximation": "abcccef",
+            "count": 100,
+            "series": [
+                {
+                    "file": "ecg-1",
+                    "positions": [
+                        [0, 4],
+                        [7, 10]
+                    ]
+                },
+                {
+                    "file": "ecg-2",
+                    "positions": [
+                        [0, 20]
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 401,
+            "label": "abccaef",
+            "approximation": "abccaef",
+            "count": 50
+        },
+        {
+            "id": 402,
+            "label": "abc",
+            "approximation": "abc",
+            "count": 10
+        },
+        {
+            "id": 403,
+            "label": "abb",
+            "approximation": "abb",
+            "count": 5,
+            "series": [
+                {
+                    "file": "ecg-4",
+                    "positions": [
+                        [0, 4],
+                        [7, 10],
+                        [20, 26]
+                    ]
+                },
+                {
+                    "file": "ecg-6",
+                    "positions": [
+                        [0, 5]
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 405,
+            "label": "abbfffa",
+            "approximation": "abbfffa",
+            "count": 5
+        },
+        {
+            "id": 406,
+            "label": "abbafaa",
+            "approximation": "abbafaa",
+            "count": 5
+        },
+        {
+            "id": 407,
+            "label": "abbacefffa",
+            "approximation": "abbacefffa",
+            "count": 2
+        }
+    ],
+
+    "links": [
+
+    ]
+}

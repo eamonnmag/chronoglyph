@@ -1,0 +1,31 @@
+.background path {
+    fill: none;
+    stroke: #ECF0F1;
+    stroke-opacity: .4;
+    shape-rendering: crispEdges;
+}
+
+.foreground path {
+    fill: none;
+    stroke: #ccc;
+    stroke-opacity: .8;
+}
+
+.brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+.axis line, .axis path {
+    fill: none;
+    stroke: #AAA;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    text-shadow: 0 1px 0 #fff;
+    font-size: .8em;
+    cursor: move;
+    fill: #7F8C8D;
+}

@@ -1,0 +1,1013 @@
+{"nodes": [
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 1,
+        "series": [
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 2,
+        "series": [
+            {
+                "positions": [
+                    [970, 1940]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 3,
+        "series": [
+            {
+                "positions": [
+                    [1940, 2860]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 4,
+        "series": [
+            {
+                "positions": [
+                    [2860, 3830]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 5,
+        "series": [
+            {
+                "positions": [
+                    [3830, 4800]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 6,
+        "series": [
+
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_2"
+
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 7,
+        "series": [
+            {
+                "positions": [
+                    [970, 1940]
+                ],
+                "file": "shuttle_2"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 8,
+        "series": [
+            {
+                "positions": [
+                    [1940, 2860]
+                ],
+                "file": "shuttle_2"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 9,
+        "series": [
+            {
+                "positions": [
+                    [2860, 3830]
+                ],
+                "file": "shuttle_2"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 10,
+        "series": [
+            {
+                "positions": [
+                    [3830, 4800]
+                ],
+                "file": "shuttle_2"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 11,
+        "series": [
+            {
+                "positions": [
+                    [9650, 10620]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 12,
+        "series": [
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 13,
+        "series": [
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 14,
+        "series": [
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 15,
+        "series": [
+            {
+                "positions": [
+                    [0, 970]
+                ],
+                "file": "shuttle_1"
+            }
+        ]
+    },
+    {
+        "approximation": "aaabcccccccbbaabaaaaaaaaaaaa",
+        "count": 1,
+        "metrics": [
+            {
+                "name": "Deviation",
+                "value": 1.663
+            },
+            {
+                "name": "Min",
+                "value": -3.10
+            },
+            {
+                "name": "Std Error",
+                "value": 0.056
+            },
+            {
+                "name": "Max",
+                "value": 7.06
+            },
+            {
+                "name": "Median",
+                "value": 0.14
+            },
+            {
+                "name": "Pixel Saving Ptnl",
+                "value": 44.0
+            },
+            {
+                "name": "Skewedness",
+                "value": 1.209
+            },
+            {
+                "name": "Compression Ptnl.",
+                "value": 880.0
+            },
+            {
+                "name": "Length",
+                "value": 22.0
+            },
+            {
+                "name": "Volatility",
+                "value": 1.746
+            },
+            {
+                "name": "Kurtosis",
+                "value": 2.553
+            },
+            {
+                "name": "Mean",
+                "value": 0.953
+            }
+        ],
+        "id": 16,
+        "series": [
+            {
+                "positions": [
+                    [3830, 4800]
+                ],
+                "file": "shuttle_3"
+            }
+        ]
+    }
+],
+    "links": []}
