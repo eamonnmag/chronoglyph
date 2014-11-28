@@ -7,23 +7,40 @@ from ChronoGlyph_Web.timeseries_analysis.max_repeats.rstr_max import Rstr_max
 from ChronoGlyph_Web.timeseries_analysis.sax import saxpy
 import scipy
 import scipy.stats
+from ChronoGlyph_Web.timeseries_analysis.string_processing.normalized_sequence_analysis import \
+    NormalizedSequenceAnalysis
 from ChronoGlyph_Web.timeseries_analysis.string_processing.sliding_window_impl import SlidingWindowAnalysis
 
 __author__ = 'eamonnmaguire'
 
 
 class AnalysisEngine(object):
-    def add_ngram_to_aggregated_sets(self, aggregated_sets, metrics, file_id, items, time_series, window_size):
+
+
+
+    def add_ngram_to_aggregated_sets(self, aggregated_sets, metrics, file_id, items, time_series, window_size, mapping):
         occurrences = {}
 
         # w_s = minimum space required for distinct visualization of point in time series
         w_s = 2
         # w_g = glyph width in the display - helps us calculate how much space can be saved
         w_g = 40
+        swa = NormalizedSequenceAnalysis()
+
         for position_key in items:
             ngram = items[position_key]["ngram"]
 
             approximation = ngram["symbolic_approximation"]
+
+            if mapping is not None:
+                # extend approximation
+                # checking here to ensure position key is not modified
+                print 'Position key ' + str(position_key)
+                print approximation
+                print swa.extend_approximation_with_mapping(position_key, approximation, mapping)
+                # TODO: we now have proper length sequence, now use it to influence the size.
+                print 'Position key ' + str(position_key)
+
             if len(approximation) > 1:
                 if not approximation in aggregated_sets:
                     aggregated_sets[approximation] = {"id": len(aggregated_sets),
@@ -160,8 +177,7 @@ class AnalysisEngine(object):
         return parallel_coords_files
 
     def write_summaries(self, aggregated_sets, file_id, items, metrics, time_series, values, values_adv, window_size,
-                        alphabet_size,
-                        x1String):
+                        alphabet_size, approximation, mapping):
 
         a = 97
         alphabet = []
@@ -174,7 +190,7 @@ class AnalysisEngine(object):
 
         data_output_representation = {}
         data_output_representation["name"] = file_id
-        data_output_representation["sax"] = {"approximation": x1String, "alphabet": alphabet,
+        data_output_representation["sax"] = {"approximation": approximation, "alphabet": alphabet,
                                              "window-size": window_size}
         data_output_representation["time-series"] = values
         data_output_representation["min"] = numpy.min(values)
@@ -182,7 +198,7 @@ class AnalysisEngine(object):
         data_output_representation["composition"] = items
         # here, iterate through everything and create a top level data structure for the report.
         aggregated_sets = self.add_ngram_to_aggregated_sets(aggregated_sets, metrics, file_id, items, values,
-                                                            window_size)
+                                                            window_size, mapping)
         # self.generate_paper_slice_metrics(values)
         time_series["time-series"].append(
             {"file": file_id, "min": numpy.min(values), "max": numpy.max(values), "series": values})
@@ -210,6 +226,8 @@ class AnalysisEngine(object):
 
         alphabetSize = int(analysis_model.alphabet_size)
         window_size = int(analysis_model.window_size)
+
+        swa = NormalizedSequenceAnalysis()
 
         series_metadata = {}
         total_values = 0
@@ -247,36 +265,48 @@ class AnalysisEngine(object):
                                                                     time_series,
                                                                     values, values_adv, window_size, alphabetSize,
                                                                     x1String)
-                print 'It took ' + str((datetime.now() - start_time)) + "ms to do that analysis using sliding window with " + str(total_values) + " time points"
+                print 'It took ' + str(
+                    (datetime.now() - start_time)) + "ms to do that analysis using sliding window with " + str(
+                    total_values) + " time points"
 
             elif analysis_model.algorithm == 'max_repeats':
                 str1_unicode = unicode(x1String, 'utf-8', 'replace')
                 series_metadata[file_index] = {"series": str1_unicode, "name": file.name, "values": values,
                                                "values_adv": values_adv}
 
+            elif analysis_model.algorithm == 'max_repeats_compressed':
+                str1_unicode = unicode(x1String, 'utf-8', 'replace')
+                compressed_suffix, mapping = swa.process_string(str1_unicode)
+                series_metadata[file_index] = {"series": compressed_suffix, "mapping": mapping, "name": file.name,
+                                               "values": values,
+                                               "values_adv": values_adv}
+
             file_index += 1
             print 'Just analysed ' + file.name
 
-        if analysis_model.algorithm == 'max_repeats':
+        if analysis_model.algorithm == 'max_repeats' or analysis_model.algorithm == 'max_repeats_compressed':
             start_time = datetime.now()
             rstr = Rstr_max()
+
             for series in series_metadata:
                 rstr.add_str(series_metadata[series]["series"])
             r = rstr.go()
             time_series_results = rstr.getFrequentItemsInCollection(r)
-            print 'It took ' + str((datetime.now() - start_time)) + "ms to do that analysis using maximal repeats with " + str(total_values) + " time points"
+
+            print 'It took ' + str(
+                (datetime.now() - start_time)) + "ms to do that analysis using maximal repeats with " + str(
+                total_values) + " time points"
 
             for time_series_result in time_series_results:
                 series_metadata_details = series_metadata[time_series_result]
                 aggregated_sets, time_series = self.write_summaries(aggregated_sets, series_metadata_details["name"],
                                                                     time_series_results[time_series_result],
-                                                                    metrics,
-                                                                    time_series,
+                                                                    metrics, time_series,
                                                                     series_metadata_details["values"],
                                                                     series_metadata_details["values_adv"],
-                                                                    window_size,
-                                                                    alphabetSize,
-                                                                    series_metadata_details["series"])
+                                                                    window_size, alphabetSize,
+                                                                    series_metadata_details["series"],
+                                                                    series_metadata_details["mapping"])
 
         count_cut_off = int(analysis_model.cutoff)
         toRemove = []
@@ -289,8 +319,7 @@ class AnalysisEngine(object):
         # for item in aggregated_sets:
         # print item
 
-        linked_graph_file = self.create_linked_graph(aggregated_sets, analysis_model.model_name,
-                                                     window_size)
+        linked_graph_file = self.create_linked_graph(aggregated_sets, analysis_model.model_name, window_size)
         analysis_model.network_file = linked_graph_file
 
         parallel_coords_files = self.create_parallel_coords_plot(aggregated_sets, analysis_model.model_name,

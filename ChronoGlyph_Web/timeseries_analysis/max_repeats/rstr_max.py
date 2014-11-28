@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from array import array
-from collections import OrderedDict
-import numpy
 from ChronoGlyph_Web.timeseries_analysis.max_repeats.tools_karkkainen_sanders import direct_kark_sort
 
 
@@ -112,18 +110,18 @@ class Rstr_max:
             # end_ = (e[0],e[1]+current_len)
             n = prev_len - current_len
             if n < 0:
-                #pushMany
+                # pushMany
                 stack.lst_max.append([-n, idx, end_])
                 stack._top += -n
             elif n > 0:
                 self.removeMany(stack, results, n, idx)
             elif stack._top > 0 and end_ > stack.lst_max[-1][-1]:
-                #setMax
+                # setMax
                 stack.lst_max[-1][-1] = end_
 
             prev_len = current_len
             pos1 = pos2
-            #offset1 = offset2
+            # offset1 = offset2
             #idStr1 = idStr2
 
         if (stack._top > 0):
@@ -210,8 +208,8 @@ class Rstr_max:
             ss = self.global_suffix[offset_end - l:offset_end]
 
             if len(ss) > 1:
-            # at this point, we want to compress every thing down using the composition rules we have.
-            # This requires a sorting on the key so that we know that everything is in order.
+                # at this point, we want to compress every thing down using the composition rules we have.
+                # This requires a sorting on the key so that we know that everything is in order.
                 result = {}
                 result[ss.encode('utf-8')] = []
                 for o in range(start_plage, start_plage + occurrence_count):

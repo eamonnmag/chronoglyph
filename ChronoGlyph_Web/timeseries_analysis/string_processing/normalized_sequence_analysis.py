@@ -1,13 +1,14 @@
+from datetime import datetime
 from ChronoGlyph_Web.timeseries_analysis.max_repeats.suffixtree import suffix_tree, tree_to_str, to_lines
 
 __author__ = 'eamonnmaguire'
 
-class SuffixAnalysis(object, ):
 
+class NormalizedSequenceAnalysis(object, ):
     def process_string(self, suffix):
-        tree = suffix_tree(suffix)
-        print tree_to_str(tree)
-        print to_lines(tree, tree.root)
+        (compressed_suffix, mapping) = self.getCollapsedApproximation(suffix)
+        return compressed_suffix, mapping
+
 
     def getCollapsedApproximation(self, approximation):
         """
@@ -36,26 +37,32 @@ class SuffixAnalysis(object, ):
             else:
                 count_array[item_count] += 1
 
-        for count in count_array:
-            if count_array[count] <= 3:
-                count_array[count] = 1
-            elif count_array[count] <= 6:
-                count_array[count] = 2
-            else:
-                count_array[count] = 3
-
-        count = 0
         compressed_representation = ""
         for item in item_array:
-            inner_count = 0
-            while inner_count < count_array[count]:
-                compressed_representation += item
-                inner_count += 1
-            count += 1
+            compressed_representation += item
 
-        return compressed_representation
+        return compressed_representation, count_array
+
+    def extend_approximation_with_mapping(self, position_key, approximation, mapping):
+        # mapping tells us for an index in a string, what the actual length was
+        actual_approximation = ""
+        for c in approximation:
+            count = 0
+            while count < mapping[position_key]:
+                actual_approximation += c
+                count += 1
+
+            position_key += 1
+
+        return actual_approximation
 
 
 if __name__ == '__main__':
-    swa = SuffixAnalysis()
-    swa.process_string("cccccccbbbbbbbbbbbbbbbbbbbbbbbbaaaaabbbbbcccccccccccbb")
+    start_time = datetime.now()
+    swa = NormalizedSequenceAnalysis()
+
+    compressed_suffix, mapping = swa.process_string("cccccccbbbbbbbbbbbbbbbbbbbbbbbbaaaaabbbbbcccccccccccbb")
+    print compressed_suffix
+    print mapping
+    swa.extend_approximation_with_mapping(2, "ab", mapping)
+    print 'It took ' + str((datetime.now() - start_time)) + "ms to do that analysis"
