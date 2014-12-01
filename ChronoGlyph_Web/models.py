@@ -43,6 +43,8 @@ class TimeSeriesModel(models.Model):
     algorithm = models.CharField(max_length=256, default='Maximal Repeats')
     algorithm_parameter = models.IntegerField(default=5)
 
+    created = models.DateTimeField(auto_now_add=True)
+
     time_series_collection = models.ForeignKey(TimeSeriesCollection)
 
     parallel_coords_file = models.FilePathField(path=OUTPUT_DIR, recursive=True)

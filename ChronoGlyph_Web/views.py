@@ -24,12 +24,12 @@ def analytics(request):
         collection = get_collection_by_id(collection_id)
         print collection.name
         if collection is not None:
-            analyses = TimeSeriesModel.objects.filter(time_series_collection=collection)
+            analyses = TimeSeriesModel.objects.filter(time_series_collection=collection).order_by('-created')
 
     data_collections = TimeSeriesCollection.objects.all()
     latest_analysis = []
     if len(analyses) > 0:
-        latest_analysis = analyses.__getitem__(len(analyses) - 1)
+        latest_analysis = analyses.__getitem__(0)
 
     return render_to_response("templates/analytics.html", {"current_collection": collection_id, "analyses": analyses,
                                                            "collections": data_collections,

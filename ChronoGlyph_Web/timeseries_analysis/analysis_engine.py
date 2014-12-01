@@ -28,56 +28,61 @@ class AnalysisEngine(object):
             ngram = items[position_key]["ngram"]
 
             approximation = ngram["symbolic_approximation"]
+            if not approximation[0].isdigit():
+                actual_approximation = approximation
 
-            if mapping is not None:
-                # extend approximation
-                # checking here to ensure position key is not modified
-                print 'Position key ' + str(position_key)
-                print approximation
-                print swa.extend_approximation_with_mapping(position_key, approximation, mapping)
-                # TODO: we now have proper length sequence, now use it to influence the size.
-                print 'Position key ' + str(position_key)
+                if mapping is not None:
+                    # extend approximation
+                    # checking here to ensure position key is not modified
+                    approximation = swa.expand_numeric_approximation(0, ngram["symbolic_approximation"],
+                                                                     mapping["compressed_count_mapping"])
 
-            if len(approximation) > 1:
-                if not approximation in aggregated_sets:
-                    aggregated_sets[approximation] = {"id": len(aggregated_sets),
-                                                      "approximation": approximation,
-                                                      "count": 0, "metrics": [], "series": []}
-                if not approximation in occurrences:
-                    occurrences[approximation] = {}
+                    actual_approximation = swa.extend_approximation(0, ngram["symbolic_approximation"],
+                                                                                 mapping["count_mapping"])
 
-                aggregated_sets[approximation]["count"] += 1
 
-                if not file_id in occurrences[approximation]:
-                    occurrences[approximation][file_id] = []
+                if len(approximation) > 1:
+                    if not approximation in aggregated_sets:
+                        aggregated_sets[approximation] = {"id": len(aggregated_sets),
+                                                          "approximation": approximation,
+                                                          "count": 0, "metrics": [], "series": []}
+                    if not approximation in occurrences:
+                        occurrences[approximation] = {}
 
-                occurrences[approximation][file_id].append(
-                    [int(position_key) * window_size, (int(position_key) + ngram["length"]) * window_size])
+                    aggregated_sets[approximation]["count"] += 1
 
-                if not approximation in metrics:
-                    metrics[approximation] = []
-                    # now calculate the stats for this motif given the context area...
+                    if not file_id in occurrences[approximation]:
+                        occurrences[approximation][file_id] = []
 
-                series_slice = time_series[
-                               int(position_key) * window_size: (int(position_key) + ngram["length"]) * window_size]
-                metrics[approximation].append(
-                    {
-                        "Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
-                        # "Kurtosis (Fisher)": scipy.stats.kurtosis(series_slice, fisher=True, bias=False),
-                        "Skewedness": scipy.stats.skew(series_slice, bias=False),
-                        "Length": len(approximation),
-                        "Max": numpy.max(series_slice),
-                        "Min": numpy.min(series_slice),
-                        "Mean": scipy.stats.nanmean(series_slice),
-                        "Median": scipy.stats.nanmedian(series_slice),
-                        "Deviation": scipy.stats.nanstd(series_slice),
-                        "Std Error": scipy.stats.sem(series_slice),
-                        "Pixel Saving Ptnl": (w_s * ngram["length"] * window_size) / w_g,
-                        "Compression Ptnl.": (ngram["length"] * window_size * aggregated_sets[approximation]["count"]) /
-                                             aggregated_sets[approximation]["count"],
-                        # "Burstiness": self.burstiness(series_slice),
-                        # "Variance Coefficient": self.variance_coefficient(series_slice),
-                        "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)})
+                    occurrences[approximation][file_id].append(
+                        [int(position_key) * window_size, (int(position_key) + len(actual_approximation)) * window_size])
+
+                    if not approximation in metrics:
+                        metrics[approximation] = []
+                        # now calculate the stats for this motif given the context area...
+
+                    series_slice = time_series[
+                                   int(position_key) * window_size: (int(position_key) + len(
+                                       actual_approximation)) * window_size]
+                    metrics[approximation].append(
+                        {
+                            "Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
+                            # "Kurtosis (Fisher)": scipy.stats.kurtosis(series_slice, fisher=True, bias=False),
+                            "Skewedness": scipy.stats.skew(series_slice, bias=False),
+                            "Length": len(actual_approximation),
+                            "Max": numpy.max(series_slice),
+                            "Min": numpy.min(series_slice),
+                            "Mean": scipy.stats.nanmean(series_slice),
+                            "Median": scipy.stats.nanmedian(series_slice),
+                            "Deviation": scipy.stats.nanstd(series_slice),
+                            "Std Error": scipy.stats.sem(series_slice),
+                            "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
+                            "Compression Ptnl.": (len(actual_approximation) * window_size * aggregated_sets[approximation][
+                                "count"]) /
+                                                 aggregated_sets[approximation]["count"],
+                            # "Burstiness": self.burstiness(series_slice),
+                            # "Variance Coefficient": self.variance_coefficient(series_slice),
+                            "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)})
 
         for approximation in metrics:
             # aggregate the metrics we have, ignoring nans where they exist scipy.stats.nanmean(values)
