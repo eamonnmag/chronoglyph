@@ -24,12 +24,12 @@ var selected_dimension_extent = {};
 ParallelCoordinates.rendering = {
 
     drawEntropyTrack: function (g) {
-        g.append("g").append("rect").attr("id",function (d) {
+        g.append("g").append("rect").attr("id", function (d) {
             return "entropy-" + d;
         }).attr("y", -31).attr("x", -20).attr("height", 10)
             .attr("width", 40).style("fill", "#f6f7f6").style("opacity", 1);
 
-        g.append("g").append("rect").attr("id",function (d) {
+        g.append("g").append("rect").attr("id", function (d) {
             return "entropy-" + d;
         }).attr("y", -31).attr("x", -20).attr("height", 10)
             .attr("width", 0).style("fill", "#3B97D3").style("opacity", 1);
@@ -106,7 +106,7 @@ ParallelCoordinates.rendering = {
                         return "path-" + d.Approximation;
                     })
                     .attr("d", ParallelCoordinates.rendering.path)
-                    .on("mouseover",function (d) {
+                    .on("mouseover", function (d) {
                         ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, true)
                     }).on("mouseout", function (d) {
                         ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, false)
@@ -181,7 +181,7 @@ ParallelCoordinates.rendering = {
                         return "brush brush-" + fileIndex + "-" + i;
                     })
                     .each(function (d, i) {
-                        d3.selectAll("g.brush-" + fileIndex + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart",function () {
+                        d3.selectAll("g.brush-" + fileIndex + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart", function () {
                             selected_pc_dimensions = {}
                         }).on("brush", ParallelCoordinates.rendering.brush).on("brushend", ParallelCoordinates.rendering.finishBrush));
                     })
@@ -256,7 +256,6 @@ ParallelCoordinates.rendering = {
 
 
         d3.selectAll("g.foreground path").style("display", function (d) {
-            // TODO: change this to consider each axis individually when calculating whether or not something falls with the extent.
 
             var on = true;
             for (var activeKey in actives) {
@@ -271,18 +270,25 @@ ParallelCoordinates.rendering = {
                     } catch (e) {
                         on = actives[activeKey][activeDimension][0] <= d[activeDimension] && d[activeDimension] <= actives[activeKey][activeDimension][1];
                     }
-
-
                     d3.select("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
-                    if (!on) return "none";
-
-
+                    if (!on) {
+                        $("#motif-row-" + d.Approximation).fadeOut(200);
+                        return "none";
+                    } else {
+                        $("#motif-row-" + d.Approximation).fadeIn(200);
+                    }
                 }
             }
             d3.selectAll("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
+
             if (on) {
+                $("#motif-row-" + d.Approximation).fadeIn(200);
                 selected_pc_dimensions[d.Approximation] = d;
+            } else {
+                $("#motif-row-" + d.Approximation).fadeOut(200);
             }
+
+
             return on ? null : "none";
         });
     }

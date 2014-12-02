@@ -82,6 +82,8 @@ ChronoAnalisi.graph = {
 
             ChronoAnalisi.graph.createNodeMap(json.nodes);
 
+            ChronoAnalisi.motifs = json.nodes;
+
             force = d3.layout.force()
                 .size([width, height])
                 .nodes(json.nodes)
@@ -190,11 +192,11 @@ ChronoAnalisi.graph = {
                 return ChronoAnalisi.graph.calculateWidth("8px Helvetica", d.count) + 6;
             })
 
-            .attr("height", 10).attr("x",function (d) {
+            .attr("height", 10).attr("x", function (d) {
                 return (glyph_width - ChronoAnalisi.graph.calculateWidth("8px Helvetica", d.count) - 6);
-            }).attr("y", 0 - 12).style("fill",function (d) {
+            }).attr("y", 0 - 12).style("fill", function (d) {
                 return value_color_scale(d.count)
-            }).style("stroke",function (d) {
+            }).style("stroke", function (d) {
                 return value_color_scale(d.count)
             }).attr("rx", 3).attr("ry", 3);
 
@@ -202,9 +204,41 @@ ChronoAnalisi.graph = {
         g.append("text")
             .text(function (d) {
                 return d.count ? d.count : 1;
-            }).attr("x",function (d) {
+            }).attr("x", function (d) {
                 return (glyph_width - ChronoAnalisi.graph.calculateWidth("8px Helvetica", d.count) - 4);
             }).attr("y", -4).style({"fill": "#fff", "font-size": "9px"});
+    },
+
+    create_series_detail_graph: function (placement, d, small_plot_width) {
+        var plot_g = d3.select(placement).append("svg").attr("width", 130).attr("height", 100).append("g");
+        var y;
+
+        // finally, render the time series...
+        for (var seriesIndex in d.series) {
+
+            var file_appearances = d.series[seriesIndex];
+            var y = d3.scale.linear().domain([ChronoAnalisi.plots[file_appearances.file].min, ChronoAnalisi.plots[file_appearances.file].max]).range([100, 10]);
+
+            var plot_data = ChronoAnalisi.plots[file_appearances.file].data;
+            for (var position in file_appearances.positions) {
+
+                var x = d3.scale.ordinal().domain(d3.range(file_appearances.positions[position][1] - file_appearances.positions[position][0])).rangePoints([0, small_plot_width], 1)
+                plot_g.append("path").attr("d", function () {
+                        return line(plot_data.slice(file_appearances.positions[position][0], file_appearances.positions[position][1]).map(function (p, i) {
+                            return [x(i), y(p)];
+                        }));
+                    }
+                ).style({"stroke": "#95A5A5", "fill": "none", "stroke-linecap": "rounded", "opacity": .6});
+            }
+
+        }
+        plot_g.append("text").text("0").attr({"x": 105, "y": y(0) + 3}).style({"font-size": ".8em", "fill": "#D25627"});
+        plot_g.append("path").attr("d", function () {
+            return line([
+                [0, y(0)],
+                [small_plot_width, y(0)]
+            ])
+        }).style({"stroke": "#D25627", "fill": "none", "stroke-linecap": "rounded"});
     },
 
     restart: function () {
@@ -246,9 +280,9 @@ ChronoAnalisi.graph = {
                 source = $("#motif-stats-template").html();
                 template = Handlebars.compile(source);
 
-                var trunc_approximation = d.approximation
-                if(trunc_approximation.length > 25) {
-                   trunc_approximation = trunc_approximation.substr(0,25) + "..."
+                var trunc_approximation = d.approximation;
+                if (trunc_approximation.length > 25) {
+                    trunc_approximation = trunc_approximation.substr(0, 25) + "..."
                 }
 
                 $("#popup-approximation").html(trunc_approximation);
@@ -260,38 +294,9 @@ ChronoAnalisi.graph = {
                 d3.select("#popup-series").html("");
                 d3.select("#popup-approximation-icon").html("");
 
-                ChronoAnalisi.functions.render_glyph("#popup-approximation-icon", 50,80, d.approximation, "#ffffff");
-                var small_plot_width =100;
-                var plot_g = d3.select("#popup-series").append("svg").attr("width", 130).attr("height", 100).append("g");
-                var y;
-
-                // finally, render the time series...
-                for (var seriesIndex in d.series) {
-
-                    var file_appearances = d.series[seriesIndex];
-                    var y = d3.scale.linear().domain([ChronoAnalisi.plots[file_appearances.file].min, ChronoAnalisi.plots[file_appearances.file].max]).range([100, 10]);
-
-                    var plot_data = ChronoAnalisi.plots[file_appearances.file].data;
-                    for (var position in file_appearances.positions) {
-
-                        var x = d3.scale.ordinal().domain(d3.range(file_appearances.positions[position][1] - file_appearances.positions[position][0])).rangePoints([0, small_plot_width], 1)
-                        plot_g.append("path").attr("d",function () {
-                                return line(plot_data.slice(file_appearances.positions[position][0], file_appearances.positions[position][1]).map(function (p, i) {
-                                    return [x(i), y(p)];
-                                }));
-                            }
-                        ).style({"stroke": "#95A5A5", "fill": "none", "stroke-linecap": "rounded", "opacity":.6});
-                    }
-
-                }
-                plot_g.append("text").text("0").attr({"x": 105, "y": y(0)+3}).style({"font-size": ".8em", "fill": "#D25627"});
-                plot_g.append("path").attr("d",function () {
-                    return line([
-                        [0, y(0)],
-                        [small_plot_width, y(0)]
-                    ])
-                }).style({"stroke": "#D25627", "fill": "none", "stroke-linecap": "rounded"});
-
+                ChronoAnalisi.functions.render_glyph("#popup-approximation-icon", 50, 80, d.approximation, "#ffffff");
+                var small_plot_width = 100;
+                ChronoAnalisi.graph.create_series_detail_graph("#popup-series", d, small_plot_width);
                 d3.select(".popup").style({"top": d3.event.pageY + "px", "left": d3.event.pageX + "px"});
                 d3.select(".popup").classed("hidden", false);
                 d3.select(".popup").transition().duration(500).style({"opacity": .95});
@@ -322,13 +327,13 @@ ChronoAnalisi.graph = {
             .attr("id", function (d) {
                 return"motif-selected-" + d.approximation;
             })
-            .attr("d",function (d) {
+            .attr("d", function (d) {
 
                 if (ChronoAnalisi.basket[d.id]) {
                     return ChronoAnalisi.basket[d.id].decision == 1 ? ok_path :
-                        ChronoAnalisi.basket[d.id].decision == -1
-                            ? cancel_path
-                            : circle_path;
+                            ChronoAnalisi.basket[d.id].decision == -1
+                        ? cancel_path
+                        : circle_path;
                 }
                 return circle_path;
 
@@ -336,9 +341,9 @@ ChronoAnalisi.graph = {
 
                 if (ChronoAnalisi.basket[d.id]) {
                     return ChronoAnalisi.basket[d.id].decision == 1 ? "#39B54A" :
-                        ChronoAnalisi.basket[d.id].decision == -1
-                            ? "#BE1E2D"
-                            : "#ccc";
+                            ChronoAnalisi.basket[d.id].decision == -1
+                        ? "#BE1E2D"
+                        : "#ccc";
                 }
                 return "#ccc";
             })

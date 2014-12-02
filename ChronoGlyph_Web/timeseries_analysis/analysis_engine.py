@@ -40,7 +40,6 @@ class AnalysisEngine(object):
                     actual_approximation = swa.extend_approximation(0, ngram["symbolic_approximation"],
                                                                                  mapping["count_mapping"])
 
-
                 if len(approximation) > 1:
                     if not approximation in aggregated_sets:
                         aggregated_sets[approximation] = {"id": len(aggregated_sets),
@@ -65,31 +64,26 @@ class AnalysisEngine(object):
                                    int(position_key) * window_size: (int(position_key) + len(
                                        actual_approximation)) * window_size]
                     metrics[approximation].append(
-                        {
-                            "Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
-                            # "Kurtosis (Fisher)": scipy.stats.kurtosis(series_slice, fisher=True, bias=False),
-                            "Skewedness": scipy.stats.skew(series_slice, bias=False),
-                            "Length": len(actual_approximation),
-                            "Max": numpy.max(series_slice),
-                            "Min": numpy.min(series_slice),
-                            "Mean": scipy.stats.nanmean(series_slice),
-                            "Median": scipy.stats.nanmedian(series_slice),
-                            "Deviation": scipy.stats.nanstd(series_slice),
-                            "Std Error": scipy.stats.sem(series_slice),
-                            "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
-                            "Compression Ptnl.": (len(actual_approximation) * window_size * aggregated_sets[approximation][
-                                "count"]) /
-                                                 aggregated_sets[approximation]["count"],
-                            # "Burstiness": self.burstiness(series_slice),
-                            # "Variance Coefficient": self.variance_coefficient(series_slice),
-                            "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)})
+                        {"Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
+                         "Skewedness": scipy.stats.skew(series_slice, bias=False),
+                         "Length": len(actual_approximation),
+                         "Max": numpy.max(series_slice),
+                         "Min": numpy.min(series_slice),
+                         "Mean": scipy.stats.nanmean(series_slice),
+                         "Median": scipy.stats.nanmedian(series_slice),
+                         "Deviation": scipy.stats.nanstd(series_slice),
+                         "Std Error": scipy.stats.sem(series_slice),
+                         "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
+                         "Compression Ptnl.": (len(actual_approximation) * window_size * aggregated_sets[approximation]["count"]) / aggregated_sets[approximation]["count"],
+                         "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)}
+                    )
 
         for approximation in metrics:
             # aggregate the metrics we have, ignoring nans where they exist scipy.stats.nanmean(values)
             metric_values = {}
             for val in metrics[approximation]:
                 for key in val:
-                    if not key in metric_values:
+                    if not (key in metric_values):
                         metric_values[key] = []
 
                     metric_values[key].append(val[key])

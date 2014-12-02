@@ -3,48 +3,45 @@
 {% block content %}
 
 
-    <div id="selected-motifs" class="pull-left">
+    <div id="selected-motifs" class="pull-left" xmlns="http://www.w3.org/1999/html">
         <div class="network-layout-option">Models</div>
 
         <div class="formulai" style="margin-top: 10px">
 
             {% for analysis in analyses %}
-                <div class="model-option {% ifequal analysis.model_name latest_analysis.model_name%}active-model{% endifequal %}" id="{{ analysis.model_name }}">
+                <div class="model-option {% ifequal analysis.model_name latest_analysis.model_name %}active-model{% endifequal %}"
+                     id="{{ analysis.model_name }}">
 
                     <div class="pull-left" style="margin-top: 4px; margin-left: 4px">{{ analysis.model_name }}<span>(&omega;
                     = {{ analysis.window_size }}, &alpha;
                     = {{ analysis.alphabet_size }})</span></div>
 
-                     <div class="btn btn-sm btn-default pull-right" onclick='ChronoAnalisi.functions.loadModel("{{ analysis.model_name }}")'  style="padding: 2px 5px;">
+                    <div class="btn btn-sm btn-default pull-right"
+                         onclick='ChronoAnalisi.functions.loadModel("{{ analysis.model_name }}")'
+                         style="padding: 2px 5px;">
                         <span class="glyphicon glyphicon-chevron-right"></span>
                     </div>
 
-                    <div class="btn btn-sm btn-danger pull-right" onclick='ChronoAnalisi.functions.deleteModel("{{ analysis.model_name }}")' style="padding: 2px 5px; margin-right: 2px">
+                    <div class="btn btn-sm btn-danger pull-right"
+                         onclick='ChronoAnalisi.functions.deleteModel("{{ analysis.model_name }}")'
+                         style="padding: 2px 5px; margin-right: 2px">
                         <span class="glyphicon glyphicon-remove"
-                         style="color: #fff;"></span>
+                              style="color: #fff;"></span>
                     </div>
-
-
-
                 </div>
             {% endfor %}
-
 
         </div>
 
         <div class="basket-footer">
-           <div class="pull-right white-button btn btn-default btn-lg" style="margin-right: 1px"
+            <div class="pull-right white-button btn btn-default btn-lg" style="margin-right: 1px"
                  onclick="ChronoAnalisi.functions.addModel()">Add New Model
             </div>
 
             <div class="network-layout-option" style="margin-top: 28px">Refinement</div>
-
             <div class="formula">
-
                 <ul align="center" id="formulai-list">
-
                 </ul>
-
                 <div align="center"><span class="addition icon-plus"></span></div>
             </div>
         </div>
@@ -59,20 +56,22 @@
 
         <div id="layout-options" class="hidden layout-options pull-left">
             <ul>
-                <li>Choose a layout strategy:</li>
-                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('distance')">Distance</li>
-                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('selection')">Selection
-                </li>
-                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('containment')">Containment
-                </li>
+                <li>Choose a layout:</li>
+                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('network')">Distance Graph</li>
+                <li class="option" onclick="ChronoAnalisi.functions.changeLayoutStrategy('table')">Table</li>
                 <li class="option" onclick="ChronoAnalisi.functions.hideOptions()">Close</li>
             </ul>
         </div>
 
         <div class="clearfix"></div>
 
-        <div id="network" style="float: left;">
-            <!-- this is where the network connecting glyphs will go... -->
+        <div id="switchable-content" style="float: left;">
+            <div id="glyph-table" class="hidden">
+                <!-- this is where the table goes... -->
+            </div>
+            <div id="network">
+                <!-- this is where the network connecting glyphs will go... -->
+            </div>
         </div>
     </div>
 
@@ -150,6 +149,46 @@
                 <span class="value">{{ this.value }}</span>
             </div>
             {{/each}}
+        </script>
+
+        <script id="motif-table-item-template" type="text/x-handlebars-template">
+            <div id="table-stats" style="height: 381px; overflow-y: scroll">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Approximation</td>
+                        <th>Mean</td>
+                        <th>Kurtosis</td>
+                        <th>Skewedness</td>
+                        <th>Length</td>
+                        <th>Min</td>
+                        <th>Max</td>
+                        <th>Mean</td>
+                        <th>Deviation</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ #each this }}
+                    <tr id="motif-row-{{ this.approximation }}" onclick="$('#approximation-detail-{{ this.approximation }}').toggleClass('hidden');">
+                        <td><div id="approximation-{{ this.approximation }}" style="width: 50px; margin: 0 auto"></div></td>
+                        <td>{{ this.Mean}}</td>
+                        <td>{{ this.Kurtosis }}</td>
+                        <td>{{ this.Skewedness }}</td>
+                        <td>{{ this.Length }}</td>
+                        <td>{{ this.Min }}</td>
+                        <td>{{ this.Max }}</td>
+                        <td>{{ this.Mean }}</td>
+                        <td>{{ this.Deviation }}</td>
+                    </tr>
+                    <tr id="approximation-detail-{{ this.approximation }}" class="series-detail hidden">
+                        <td colspan="9">
+                        <div>Hello!</div>
+                        </td>
+                    </tr>
+                    {{ /each }}
+                    </tbody>
+                </table>
+            </div>
         </script>
 
         <script id="popup-options-template" type="text/x-handlebars-template">

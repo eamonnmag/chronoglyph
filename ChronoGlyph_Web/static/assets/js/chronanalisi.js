@@ -9,6 +9,7 @@ ChronoAnalisi.basket = {};
 
 ChronoAnalisi.motifPaths = {};
 ChronoAnalisi.plots = {};
+ChronoAnalisi.motifs = {};
 ChronoAnalisi.layout_strategy = "distance";
 
 ChronoAnalisi.functions = {
@@ -111,12 +112,12 @@ ChronoAnalisi.functions = {
         var alphabet_scale = d3.scale.ordinal().domain(["a", "b", "c", "d", "e", "f"]).rangePoints([height - 5, 5]);
         var x = d3.scale.ordinal().domain(d3.range(approximation.length)).rangePoints([0, width], 1);
 
-        motif_g.append("path").attr("d",function () {
+        motif_g.append("path").attr("d", function () {
                 return line(approximation.split('').map(function (p, i) {
                     return [x(i), alphabet_scale(p)];
                 }));
             }
-        ).style({"stroke": "#414241", "fill": "none", "stroke-linecap": "rounded"});
+        ).style({"stroke": "#414241", "fill": "none", "stroke-linecap": "rounded", "stroke-width": 2});
     },
 
 
@@ -127,14 +128,14 @@ ChronoAnalisi.functions = {
 
         g.append("rect").attr("width", width).attr("height", height).style("fill", "#f6f7f6");
         g.append("text").text(time_series.file).attr({"x": 5, "y": 15}).style({"font-size": ".8em", "fill": "#D25627"});
-        g.append("path").attr("d",function () {
+        g.append("path").attr("d", function () {
                 return line(time_series.series.map(function (p, i) {
                     return [x(i), y(p)];
                 }));
             }
         ).style({"stroke": "#7F8C8D", "fill": "none", "stroke-linecap": "rounded"});
 
-        g.append("path").attr("d",function () {
+        g.append("path").attr("d", function () {
             return line([
                 [0, y(0)],
                 [width, y(0)]
@@ -142,7 +143,7 @@ ChronoAnalisi.functions = {
         }).style({"stroke": "#BDC3C7", "fill": "none", "stroke-linecap": "rounded"});
 
         // we maintain the x scale to figure out where to plot markers for where glyphs appear later.
-        ChronoAnalisi.plots[time_series.file] = {"x": x, "height": plotHeight, "svg": g, "data": time_series.series, "min": time_series.min, "max":time_series.max};
+        ChronoAnalisi.plots[time_series.file] = {"x": x, "height": plotHeight, "svg": g, "data": time_series.series, "min": time_series.min, "max": time_series.max};
     },
 
     plotTimeSeriesData: function (placement, dataurl, width, height) {
@@ -237,18 +238,16 @@ ChronoAnalisi.functions = {
     },
 
     changeLayoutStrategy: function (type) {
-        if (type === "distance") {
-            ChronoAnalisi.graph.createNetworkVisualization('assets/data/ecg/linked.json', '#network', 620, 400);
+
+        if (type == 'network') {
+            $('#glyph-table').addClass('hidden');
+            $('#network').removeClass('hidden');
         } else {
-
-            // callback function
-            function addLinks() {
-                ChronoAnalisi.graph.addLinks(ChronoAnalisi.functions.createLinksForSelectedAndNonSelected());
-            }
-
-            ChronoAnalisi.graph.createNetworkVisualization('assets/data/ecg/unlinked.json', '#network', 620, 400, addLinks);
-
+            $('#glyph-table').removeClass('hidden');
+            $('#network').addClass('hidden');
+            ChronoAnalisi.functions.generate_and_show_table(ChronoAnalisi.functions.create_summary_from_motif(ChronoAnalisi.motifs));
         }
+
         ChronoAnalisi.layout_strategy = type;
         $("#current-layout").html(type);
     },
@@ -274,18 +273,17 @@ ChronoAnalisi.functions = {
     },
 
     addModel: function () {
-         $("#create_model_modal").modal('show');
+        $("#create_model_modal").modal('show');
     },
 
-    loadModel: function(model_name) {
-
-        $(".model-option").each(function() {
-            console.log(this.id);
+    loadModel: function (model_name) {
+        $(".model-option").each(function () {
             $("#" + this.id).removeClass("active-model");
         });
 
+        $('#glyph-table').addClass('hidden');
+        $('#network').removeClass('hidden');
         $("#" + model_name).addClass("active-model");
-
         $("#parallel-coords").html('');
         $("#network").html('');
         $("#time-series-plots").html('');
@@ -294,8 +292,43 @@ ChronoAnalisi.functions = {
         ChronoAnalisi.functions.plotTimeSeriesData("#time-series-plots", "/get_file?model_name=" + model_name + "&file_type=time_series", 300, 350);
     },
 
-    deleteModel: function(model_name) {
-        d3.json('/delete_analysis/' + model_name, function(data) {
+
+    create_summary_from_motif: function (motifs) {
+        var summary_representation = [];
+        for (var motif in motifs) {
+            var motif_representation = {};
+            var motif_metrics = motifs[motif].metrics;
+            for (var metric in  motif_metrics) {
+                motif_representation[motif_metrics[metric].name] = motif_metrics[metric].value;
+            }
+
+            motif_representation["approximation"] = motifs[motif].approximation;
+            motif_representation["series"] = motifs[motif]["series"];
+            summary_representation.push(motif_representation)
+        }
+
+        return summary_representation;
+    },
+
+    generate_and_show_table: function (to_show) {
+
+        var source = $("#motif-table-item-template").html();
+        var template = Handlebars.compile(source);
+
+        var html = template(to_show);
+
+        $('#glyph-table').html(html);
+        $('#glyph-table').removeClass('hidden');
+        $('#network').addClass('hidden');
+//        now populate each of the approximation and time series plots
+        for (var approximation in to_show) {
+            var approximation = to_show[approximation]["approximation"];
+            ChronoAnalisi.functions.render_glyph("#approximation-" + approximation, 50, 40, approximation, "#f6f7f7");
+        }
+    },
+
+    deleteModel: function (model_name) {
+        d3.json('/delete_analysis/' + model_name, function (data) {
             console.log(data.name);
             $("#" + model_name).remove()
         })
