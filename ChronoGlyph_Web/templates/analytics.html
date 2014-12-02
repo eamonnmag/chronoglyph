@@ -152,7 +152,7 @@
         </script>
 
         <script id="motif-table-item-template" type="text/x-handlebars-template">
-            <div id="table-stats" style="height: 381px; overflow-y: scroll">
+            <div id="table-stats" style="width: 650px; height: 381px; overflow-y: scroll">
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -169,7 +169,7 @@
                     </thead>
                     <tbody>
                     {{ #each this }}
-                    <tr id="motif-row-{{ this.approximation }}" onclick="$('#approximation-detail-{{ this.approximation }}').toggleClass('hidden');">
+                    <tr id="motif-row-{{ this.approximation }}" onclick="$('#motif-row-detail-{{ this.approximation }}').toggleClass('hidden');">
                         <td><div id="approximation-{{ this.approximation }}" style="width: 50px; margin: 0 auto"></div></td>
                         <td>{{ this.Mean}}</td>
                         <td>{{ this.Kurtosis }}</td>
@@ -180,9 +180,9 @@
                         <td>{{ this.Mean }}</td>
                         <td>{{ this.Deviation }}</td>
                     </tr>
-                    <tr id="approximation-detail-{{ this.approximation }}" class="series-detail hidden">
+                    <tr id="motif-row-detail-{{ this.approximation }}" class="series-detail hidden">
                         <td colspan="9">
-                        <div>Hello!</div>
+                        <div id="plots-{{ this.approximation }}" style="width: 90%; margin: 0 auto"></div>
                         </td>
                     </tr>
                     {{ /each }}

@@ -38,7 +38,7 @@ class AnalysisEngine(object):
                                                                      mapping["compressed_count_mapping"])
 
                     actual_approximation = swa.extend_approximation(0, ngram["symbolic_approximation"],
-                                                                                 mapping["count_mapping"])
+                                                                    mapping["count_mapping"])
 
                 if len(approximation) > 1:
                     if not approximation in aggregated_sets:
@@ -53,9 +53,6 @@ class AnalysisEngine(object):
                     if not file_id in occurrences[approximation]:
                         occurrences[approximation][file_id] = []
 
-                    occurrences[approximation][file_id].append(
-                        [int(position_key) * window_size, (int(position_key) + len(actual_approximation)) * window_size])
-
                     if not approximation in metrics:
                         metrics[approximation] = []
                         # now calculate the stats for this motif given the context area...
@@ -63,20 +60,28 @@ class AnalysisEngine(object):
                     series_slice = time_series[
                                    int(position_key) * window_size: (int(position_key) + len(
                                        actual_approximation)) * window_size]
-                    metrics[approximation].append(
-                        {"Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
-                         "Skewedness": scipy.stats.skew(series_slice, bias=False),
-                         "Length": len(actual_approximation),
-                         "Max": numpy.max(series_slice),
-                         "Min": numpy.min(series_slice),
-                         "Mean": scipy.stats.nanmean(series_slice),
-                         "Median": scipy.stats.nanmedian(series_slice),
-                         "Deviation": scipy.stats.nanstd(series_slice),
-                         "Std Error": scipy.stats.sem(series_slice),
-                         "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
-                         "Compression Ptnl.": (len(actual_approximation) * window_size * aggregated_sets[approximation]["count"]) / aggregated_sets[approximation]["count"],
-                         "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)}
-                    )
+
+                    series_metric = {"Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
+                                     "Skewedness": scipy.stats.skew(series_slice, bias=False),
+                                     "Length": len(actual_approximation),
+                                     "Max": numpy.max(series_slice),
+                                     "Min": numpy.min(series_slice),
+                                     "Mean": scipy.stats.nanmean(series_slice),
+                                     "Median": scipy.stats.nanmedian(series_slice),
+                                     "Deviation": scipy.stats.nanstd(series_slice),
+                                     "Std Error": scipy.stats.sem(series_slice),
+                                     "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
+                                     "Compression Ptnl.": (len(actual_approximation) * window_size *
+                                                           aggregated_sets[approximation][
+                                                               "count"]) / aggregated_sets[approximation]["count"],
+                                     "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)}
+
+                    occurrences[approximation][file_id].append({"position":
+                                                                    [int(position_key) * window_size, (
+                                                                        int(position_key) + len(
+                                                                            actual_approximation)) * window_size],
+                                                                "metrics": series_metric})
+                    metrics[approximation].append(series_metric)
 
         for approximation in metrics:
             # aggregate the metrics we have, ignoring nans where they exist scipy.stats.nanmean(values)

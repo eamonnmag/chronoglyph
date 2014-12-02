@@ -168,9 +168,11 @@ ChronoAnalisi.functions = {
             var x_scale = plot_data.x;
             var height = plot_data.height;
             for (var position in file_appearances.positions) {
+                var position_array = file_appearances.positions[position]["position"];
+                console.log(position_array);
                 d3.select("#" + file_appearances.file + " g").append("rect").attr("id", "highlight-" + file_appearances.file)
-                    .attr("x", x_scale(file_appearances.positions[position][0])).attr("y", 0)
-                    .attr("width", (x_scale(file_appearances.positions[position][1]) - x_scale(file_appearances.positions[position][0])))
+                    .attr("x", x_scale(position_array[0])).attr("y", 0)
+                    .attr("width", (x_scale(position_array[1]) - x_scale(position_array[0])))
                     .attr("height", height).style("fill", "#95A5A5").style("opacity", .2);
             }
         }
@@ -317,13 +319,25 @@ ChronoAnalisi.functions = {
 
         var html = template(to_show);
 
-        $('#glyph-table').html(html);
-        $('#glyph-table').removeClass('hidden');
+        var glyph_table = $('#glyph-table');
+        glyph_table.html(html);
+        glyph_table.removeClass('hidden');
         $('#network').addClass('hidden');
 //        now populate each of the approximation and time series plots
+        var count = 0;
         for (var approximation in to_show) {
-            var approximation = to_show[approximation]["approximation"];
-            ChronoAnalisi.functions.render_glyph("#approximation-" + approximation, 50, 40, approximation, "#f6f7f7");
+            var sax_approximation = to_show[approximation]["approximation"];
+            ChronoAnalisi.functions.render_glyph("#approximation-" + sax_approximation, 50, 40, sax_approximation, "#f6f7f7");
+            var series_record = to_show[approximation].series;
+
+            for (var series in series_record) {
+                for (var position in series_record[series].positions) {
+                    $("#plots-" + sax_approximation).append('<div class="plot pull-left"><p>' + series_record[series].file + '</p><div id="plot-' + count + '"></div></div>');
+                    ChronoAnalisi.graph.create_single_detail_graph("#plot-" + count,
+                        series_record[series].file, series_record[series].positions[position], 100);
+                    count++;
+                }
+            }
         }
     },
 

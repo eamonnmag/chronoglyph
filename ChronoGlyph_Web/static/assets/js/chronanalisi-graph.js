@@ -209,29 +209,29 @@ ChronoAnalisi.graph = {
             }).attr("y", -4).style({"fill": "#fff", "font-size": "9px"});
     },
 
-    create_series_detail_graph: function (placement, d, small_plot_width) {
-        var plot_g = d3.select(placement).append("svg").attr("width", 130).attr("height", 100).append("g");
-        var y;
-
-        // finally, render the time series...
-        for (var seriesIndex in d.series) {
-
-            var file_appearances = d.series[seriesIndex];
-            var y = d3.scale.linear().domain([ChronoAnalisi.plots[file_appearances.file].min, ChronoAnalisi.plots[file_appearances.file].max]).range([100, 10]);
-
-            var plot_data = ChronoAnalisi.plots[file_appearances.file].data;
-            for (var position in file_appearances.positions) {
-
-                var x = d3.scale.ordinal().domain(d3.range(file_appearances.positions[position][1] - file_appearances.positions[position][0])).rangePoints([0, small_plot_width], 1)
-                plot_g.append("path").attr("d", function () {
-                        return line(plot_data.slice(file_appearances.positions[position][0], file_appearances.positions[position][1]).map(function (p, i) {
-                            return [x(i), y(p)];
-                        }));
-                    }
-                ).style({"stroke": "#95A5A5", "fill": "none", "stroke-linecap": "rounded", "opacity": .6});
+    plot_detail_line: function (position_array, small_plot_width, plot_g, plot_data, y) {
+        var x = d3.scale.ordinal().domain(d3.range(position_array[1] - position_array[0])).rangePoints([0, small_plot_width], 1);
+        plot_g.append("path").attr("d", function () {
+                return line(plot_data.slice(position_array[0], position_array[1]).map(function (p, i) {
+                    return [x(i), y(p)];
+                }));
             }
+        ).style({"stroke": "#95A5A5", "fill": "none", "stroke-linecap": "rounded", "opacity": .6});
+    },
 
-        }
+    create_single_detail_graph: function (placement, file, record, small_plot_width) {
+        var plot_g = d3.select(placement).append("svg").attr("width", small_plot_width).attr("height", 100).append("g");
+
+        var y = d3.scale.linear().domain([ChronoAnalisi.plots[file].min, ChronoAnalisi.plots[file].max]).range([100, 10]);
+
+        var plot_data = ChronoAnalisi.plots[file].data;
+
+        ChronoAnalisi.graph.plot_detail_line(record["position"], small_plot_width, plot_g, plot_data, y);
+        ChronoAnalisi.graph.detail_graph_plot_zero_line(plot_g, y, small_plot_width);
+    },
+
+
+    detail_graph_plot_zero_line: function (plot_g, y, small_plot_width) {
         plot_g.append("text").text("0").attr({"x": 105, "y": y(0) + 3}).style({"font-size": ".8em", "fill": "#D25627"});
         plot_g.append("path").attr("d", function () {
             return line([
@@ -239,6 +239,24 @@ ChronoAnalisi.graph = {
                 [small_plot_width, y(0)]
             ])
         }).style({"stroke": "#D25627", "fill": "none", "stroke-linecap": "rounded"});
+    },
+
+    create_series_detail_graph: function (placement, d, small_plot_width) {
+        var plot_g = d3.select(placement).append("svg").attr("width", small_plot_width).attr("height", 100).append("g");
+        var y;
+        // finally, render the time series...
+        for (var seriesIndex in d.series) {
+
+            var file_appearances = d.series[seriesIndex];
+            y = d3.scale.linear().domain([ChronoAnalisi.plots[file_appearances.file].min, ChronoAnalisi.plots[file_appearances.file].max]).range([100, 10]);
+
+            var plot_data = ChronoAnalisi.plots[file_appearances.file].data;
+            for (var position in file_appearances.positions) {
+                var position_array = file_appearances.positions[position]["position"];
+                ChronoAnalisi.graph.plot_detail_line(position_array, small_plot_width, plot_g, plot_data, y);
+            }
+        }
+        ChronoAnalisi.graph.detail_graph_plot_zero_line(plot_g, y, small_plot_width);
     },
 
     restart: function () {

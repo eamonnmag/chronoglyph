@@ -272,9 +272,12 @@ ParallelCoordinates.rendering = {
                     }
                     d3.select("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
                     if (!on) {
+
+                        $("#motif-row-detail-" + d.Approximation).fadeOut(200);
                         $("#motif-row-" + d.Approximation).fadeOut(200);
                         return "none";
                     } else {
+                        $("#motif-row-detail-" + d.Approximation).fadeIn(200);
                         $("#motif-row-" + d.Approximation).fadeIn(200);
                     }
                 }
@@ -282,9 +285,11 @@ ParallelCoordinates.rendering = {
             d3.selectAll("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
 
             if (on) {
+                $("#motif-row-detail-" + d.Approximation).fadeOut(200);
                 $("#motif-row-" + d.Approximation).fadeIn(200);
                 selected_pc_dimensions[d.Approximation] = d;
             } else {
+                $("#motif-row-detail-" + d.Approximation).fadeIn(200);
                 $("#motif-row-" + d.Approximation).fadeOut(200);
             }
 
