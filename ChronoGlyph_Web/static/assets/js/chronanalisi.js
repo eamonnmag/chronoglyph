@@ -395,6 +395,7 @@ ChronoAnalisi.functions = {
 
         var series_record = motif_object.series;
         var count = 0;
+        var data_for_pc = [];
         for (var series in series_record) {
             for (var position in series_record[series].positions) {
                 var record = series_record[series].positions[position];
@@ -406,12 +407,20 @@ ChronoAnalisi.functions = {
                 ChronoAnalisi.graph.create_single_detail_graph("#plot-" + count,
                     series_record[series].file, record.position, 80, 30);
 
+                console.log(record);
+                var record_for_pc = record.metrics;
+                record_for_pc["id"] = count;
+                record_for_pc["Approximation"] = approximation;
+                data_for_pc.push(record_for_pc);
                 count++;
             }
         }
 
         // render the series parallel coordinates.
 
+        console.log(data_for_pc)
+        $("#parallel-coords").html('');
+        ParallelCoordinates.rendering.render_coordinates(240, "#parallel-coords", 1400, 0, data_for_pc, ["Approximation"]);
 
     },
 

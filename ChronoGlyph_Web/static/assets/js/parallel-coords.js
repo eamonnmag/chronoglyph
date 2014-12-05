@@ -35,16 +35,16 @@ ParallelCoordinates.rendering = {
             .attr("width", 0).style("fill", "#3B97D3").style("opacity", 1);
     },
 
-    render_coordinates: function (h, files, placement, w, fileIndex, data, ordinalColumns) {
+    render_coordinates: function (h, placement, w, index, data, ordinalColumns) {
         var data_index = new Date().getTime();
         y[data_index] = {};
 
-        var graphHeight = (h - margins.bottom - margins.top) / files.length;
+        var graphHeight = (h - margins.bottom - margins.top);
 
         var svg = d3.select(placement).append("svg")
             .attr("width", w + margins.left + margins.right)
             .attr("height", graphHeight + 30)
-            .attr("class", "plot-" + fileIndex)
+            .attr("class", "plot-" + index)
             .append("g")
             .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
 
@@ -164,10 +164,10 @@ ParallelCoordinates.rendering = {
         // Add and store a brush for each axis.
         g.append("g")
             .attr("class", function (d, i) {
-                return "brush brush-" + fileIndex + "-" + i;
+                return "brush brush-" + index + "-" + i;
             })
             .each(function (d, i) {
-                d3.selectAll("g.brush-" + fileIndex + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart", function () {
+                d3.selectAll("g.brush-" + index + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart", function () {
                     selected_pc_dimensions = {}
                 }).on("brush", ParallelCoordinates.rendering.brush).on("brushend", ParallelCoordinates.rendering.finishBrush));
             })
@@ -186,12 +186,12 @@ ParallelCoordinates.rendering = {
             }
         }
 
-        x = d3.scale.ordinal().rangePoints([0, w], 1)
-
+        x = d3.scale.ordinal().rangePoints([0, w], 1);
 
         for (var fileIndex in files) {
             d3.json(files[fileIndex], function (data) {
-                ParallelCoordinates.rendering.render_coordinates(h, files, placement, w, fileIndex, data, ordinalColumns);
+                console.log(data);
+                ParallelCoordinates.rendering.render_coordinates(h, placement, w, 0, data, ordinalColumns);
             });
         }
     },
@@ -277,10 +277,12 @@ ParallelCoordinates.rendering = {
                     d3.select("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
                     if (!on) {
 
+                        $("#time-series-row-" + d.id).fadeOut(200);
                         $("#motif-row-detail-" + d.Approximation).fadeOut(200);
                         $("#motif-row-" + d.Approximation).fadeOut(200);
                         return "none";
                     } else {
+                        $("#time-series-row-" + d.id).fadeIn(200);
                         $("#motif-row-detail-" + d.Approximation).fadeIn(200);
                         $("#motif-row-" + d.Approximation).fadeIn(200);
                     }
@@ -289,10 +291,12 @@ ParallelCoordinates.rendering = {
             d3.selectAll("#motif-node-" + d.Approximation).transition().duration(400).attr("opacity", on ? 1 : .2);
 
             if (on) {
+                $("#time-series-row-" + d.id).fadeIn(200);
                 $("#motif-row-detail-" + d.Approximation).fadeOut(200);
                 $("#motif-row-" + d.Approximation).fadeIn(200);
                 selected_pc_dimensions[d.Approximation] = d;
             } else {
+                $("#time-series-row-" + d.id).fadeOut(200);
                 $("#motif-row-detail-" + d.Approximation).fadeIn(200);
                 $("#motif-row-" + d.Approximation).fadeOut(200);
             }
