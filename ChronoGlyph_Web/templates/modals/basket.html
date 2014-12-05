@@ -1,7 +1,14 @@
 <div id="flp-basket" class="selection-basket hidden">
 
-    <div id="basket-contents" class="basket-content">
-        {#        this will be rendered using javascript#}
+
+    <div id="basket" class="basket-content">
+        {#        <div class="btn btn-sm btn-default">#}
+        {#            View All Motifs#}
+        {#        </div>#}
+        <div id="basket-contents">
+            {#        this will be rendered using javascript#}
+        </div>
+
     </div>
 </div>
 
@@ -10,6 +17,11 @@
     .basket-header h4 {
         color: #aaa;
         border-bottom: #ddd 1px solid;
+    }
+
+    #basket-contents {
+        max-height: 700px;
+        overflow-y: scroll;
     }
 
     .selection-basket {
@@ -23,13 +35,21 @@
         opacity: .95;
     }
 
+    #glyph-table {
+        overflow-y: scroll;
+        height: 387px;
+        width: 650px;
+    }
+
     .basket-item {
         padding: 10px;
         height: 80px;
-
+        border-left: 4px solid #f1f2f1;
     }
 
     .basket-item:hover {
-        background-color: #f6f7f6;
+        border-left: 4px solid #D25627;
+        background-color: white;
+        cursor: pointer;
     }
 </style>

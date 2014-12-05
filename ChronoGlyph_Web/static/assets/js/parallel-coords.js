@@ -35,6 +35,147 @@ ParallelCoordinates.rendering = {
             .attr("width", 0).style("fill", "#3B97D3").style("opacity", 1);
     },
 
+    render_coordinates: function (h, files, placement, w, fileIndex, data, ordinalColumns) {
+        var data_index = new Date().getTime();
+        y[data_index] = {};
+
+        var graphHeight = (h - margins.bottom - margins.top) / files.length;
+
+        var svg = d3.select(placement).append("svg")
+            .attr("width", w + margins.left + margins.right)
+            .attr("height", graphHeight + 30)
+            .attr("class", "plot-" + fileIndex)
+            .append("g")
+            .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+
+        x.domain(dimensions = d3.keys(data[0]).filter(function (d) {
+
+            if (ordinalColumns.indexOf(d) != -1) {
+                data.forEach(function (columnData) {
+                    // Coerce values to numbers.
+                    variablesToDimension[columnData[d]] = d;
+                });
+
+                y[data_index][d] = d3.scale.ordinal().domain(data.map(function (p) {
+                    return p[d];
+                })).rangePoints([graphHeight, 0]);
+            } else {
+                y[data_index][d] = d3.scale.linear()
+                    .domain(d3.extent(data, function (p) {
+                        return +p[d];
+                    }))
+                    .range([graphHeight, 0]);
+            }
+
+            return d != "Approximation" && y[data_index][d];
+        }));
+
+        background[data_index] = svg.append("g")
+            .attr("class", "background")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("d", function (d) {
+                // we assign it with an axis
+                d.value_scale = y[data_index];
+                d.data_key = data_index;
+                return ParallelCoordinates.rendering.path(d);
+            });
+
+        foreground[data_index] = svg.append("g")
+            .attr("class", "foreground")
+
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("id", function (d) {
+                return "path-" + d.Approximation;
+            })
+            .attr("d", ParallelCoordinates.rendering.path)
+            .on("mouseover", function (d) {
+                ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, true)
+            }).on("mouseout", function (d) {
+                ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, false)
+            });
+
+        var g = svg.selectAll(".dimension")
+            .data(dimensions)
+            .enter().append("g")
+            .attr("class", function (d, i) {
+                return "dimension d-" + data_index + "-" + i;
+            })
+            .attr("transform", function (d) {
+                return "translate(" + x(d) + ")";
+            })
+            .call(d3.behavior.drag()
+                .on("dragstart", function (d) {
+
+                    dragging[d] = this.__origin__ = x(d);
+                    for (var fileIn in background) {
+                        background[fileIn].attr("opacity", "0");
+                    }
+                })
+                .on("drag", function (d) {
+                    dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
+                    foreground[data_index].attr("d", ParallelCoordinates.rendering.path);
+                    dimensions.sort(function (a, b) {
+                        return ParallelCoordinates.rendering.position(a) - ParallelCoordinates.rendering.position(b);
+                    });
+                    x.domain(dimensions);
+                    svg.selectAll(".dimension").attr("transform", function (d) {
+                        return "translate(" + ParallelCoordinates.rendering.position(d) + ")";
+                    })
+                })
+                .on("dragend", function (d) {
+                    delete this.__origin__;
+                    delete dragging[d];
+
+                    d3.selectAll(".dimension").transition().duration(1000).ease("elastic").attr("transform", function (d) {
+                        return "translate(" + ParallelCoordinates.rendering.position(d) + ")";
+                    })
+
+                    for (var fileIn in foreground) {
+                        ParallelCoordinates.rendering.transition(foreground[fileIn])
+                            .attr("d", ParallelCoordinates.rendering.path);
+
+                        background[fileIn]
+                            .attr("d", ParallelCoordinates.rendering.path)
+                            .transition()
+                            .delay(0)
+                            .duration(1000)
+                            .attr("opacity", ".7");
+                    }
+
+                    ChronoAnalisi.graph.restart();
+                }));
+
+        ParallelCoordinates.rendering.drawEntropyTrack(g);
+        g.append("g")
+            .attr("class", "axis")
+            .each(function (d) {
+                d3.select(this).call(axis.scale(y[data_index][d]));
+            })
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("y", -9)
+            .text(String);
+
+        // Add and store a brush for each axis.
+        // Add and store a brush for each axis.
+        g.append("g")
+            .attr("class", function (d, i) {
+                return "brush brush-" + fileIndex + "-" + i;
+            })
+            .each(function (d, i) {
+                d3.selectAll("g.brush-" + fileIndex + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart", function () {
+                    selected_pc_dimensions = {}
+                }).on("brush", ParallelCoordinates.rendering.brush).on("brushend", ParallelCoordinates.rendering.finishBrush));
+            })
+            .selectAll("rect")
+            .attr("x", -8)
+            .attr("width", 16);
+    },
+
     loadAndDraw: function (placement, files, w, h, ordinalColumns, options) {
         width = w;
         height = h;
@@ -50,144 +191,7 @@ ParallelCoordinates.rendering = {
 
         for (var fileIndex in files) {
             d3.json(files[fileIndex], function (data) {
-                var data_index = new Date().getTime();
-                y[data_index] = {};
-
-                var graphHeight = (h - margins.bottom - margins.top) / files.length;
-
-                var svg = d3.select(placement).append("svg")
-                    .attr("width", w + margins.left + margins.right)
-                    .attr("height", graphHeight + 30)
-                    .attr("class", "plot-" + fileIndex)
-                    .append("g")
-                    .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
-
-                x.domain(dimensions = d3.keys(data[0]).filter(function (d) {
-
-                    if (ordinalColumns.indexOf(d) != -1) {
-                        data.forEach(function (columnData) {
-                            // Coerce values to numbers.
-                            variablesToDimension[columnData[d]] = d;
-                        });
-
-                        y[data_index][d] = d3.scale.ordinal().domain(data.map(function (p) {
-                            return p[d];
-                        })).rangePoints([graphHeight, 0]);
-                    } else {
-                        y[data_index][d] = d3.scale.linear()
-                            .domain(d3.extent(data, function (p) {
-                                return +p[d];
-                            }))
-                            .range([graphHeight, 0]);
-                    }
-
-                    return d != "Approximation" && y[data_index][d];
-                }));
-
-                background[data_index] = svg.append("g")
-                    .attr("class", "background")
-                    .selectAll("path")
-                    .data(data)
-                    .enter().append("path")
-                    .attr("d", function (d) {
-                        // we assign it with an axis
-                        d.value_scale = y[data_index];
-                        d.data_key = data_index;
-                        return ParallelCoordinates.rendering.path(d);
-                    });
-
-                foreground[data_index] = svg.append("g")
-                    .attr("class", "foreground")
-
-                    .selectAll("path")
-                    .data(data)
-                    .enter().append("path")
-                    .attr("id", function (d) {
-                        return "path-" + d.Approximation;
-                    })
-                    .attr("d", ParallelCoordinates.rendering.path)
-                    .on("mouseover", function (d) {
-                        ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, true)
-                    }).on("mouseout", function (d) {
-                        ChronoAnalisi.functions.toggleHighlightNodeInGraph(d.Approximation, false)
-                    });
-
-                var g = svg.selectAll(".dimension")
-                    .data(dimensions)
-                    .enter().append("g")
-                    .attr("class", function (d, i) {
-                        return "dimension d-" + data_index + "-" + i;
-                    })
-                    .attr("transform", function (d) {
-                        return "translate(" + x(d) + ")";
-                    })
-                    .call(d3.behavior.drag()
-                        .on("dragstart", function (d) {
-
-                            dragging[d] = this.__origin__ = x(d);
-                            for (var fileIn in background) {
-                                background[fileIn].attr("opacity", "0");
-                            }
-                        })
-                        .on("drag", function (d) {
-                            dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
-                            foreground[data_index].attr("d", ParallelCoordinates.rendering.path);
-                            dimensions.sort(function (a, b) {
-                                return ParallelCoordinates.rendering.position(a) - ParallelCoordinates.rendering.position(b);
-                            });
-                            x.domain(dimensions);
-                            svg.selectAll(".dimension").attr("transform", function (d) {
-                                return "translate(" + ParallelCoordinates.rendering.position(d) + ")";
-                            })
-                        })
-                        .on("dragend", function (d) {
-                            delete this.__origin__;
-                            delete dragging[d];
-
-                            d3.selectAll(".dimension").transition().duration(1000).ease("elastic").attr("transform", function (d) {
-                                return "translate(" + ParallelCoordinates.rendering.position(d) + ")";
-                            })
-
-                            for (var fileIn in foreground) {
-                                ParallelCoordinates.rendering.transition(foreground[fileIn])
-                                    .attr("d", ParallelCoordinates.rendering.path);
-
-                                background[fileIn]
-                                    .attr("d", ParallelCoordinates.rendering.path)
-                                    .transition()
-                                    .delay(0)
-                                    .duration(1000)
-                                    .attr("opacity", ".7");
-                            }
-
-                            ChronoAnalisi.graph.restart();
-                        }));
-
-                ParallelCoordinates.rendering.drawEntropyTrack(g);
-                g.append("g")
-                    .attr("class", "axis")
-                    .each(function (d) {
-                        d3.select(this).call(axis.scale(y[data_index][d]));
-                    })
-                    .append("text")
-                    .attr("text-anchor", "middle")
-                    .attr("y", -9)
-                    .text(String);
-
-                // Add and store a brush for each axis.
-                // Add and store a brush for each axis.
-                g.append("g")
-                    .attr("class", function (d, i) {
-                        return "brush brush-" + fileIndex + "-" + i;
-                    })
-                    .each(function (d, i) {
-                        d3.selectAll("g.brush-" + fileIndex + "-" + i).call(y[data_index][d].brush = d3.svg.brush().y(y[data_index][d]).on("brushstart", function () {
-                            selected_pc_dimensions = {}
-                        }).on("brush", ParallelCoordinates.rendering.brush).on("brushend", ParallelCoordinates.rendering.finishBrush));
-                    })
-                    .selectAll("rect")
-                    .attr("x", -8)
-                    .attr("width", 16);
+                ParallelCoordinates.rendering.render_coordinates(h, files, placement, w, fileIndex, data, ordinalColumns);
             });
         }
     },

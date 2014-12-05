@@ -35,7 +35,7 @@ ChronoAnalisi.functions = {
         for (var key in ChronoAnalisi.basket) {
             if (ChronoAnalisi.basket[key].decision == 1) {
                 selected++;
-                $('#basket-contents').append('<div class="basket-item" id="motif-' + ChronoAnalisi.basket[key].name + '"></div>');
+                $('#basket-contents').append('<div class="basket-item" id="motif-' + ChronoAnalisi.basket[key].name + '" onclick="ChronoAnalisi.functions.load_submotifs(\'' + key + '\')"></div>');
                 ChronoAnalisi.functions.render_glyph("#motif-" + ChronoAnalisi.basket[key].name, 90, 60, ChronoAnalisi.basket[key].name, "none");
             }
 
@@ -318,6 +318,7 @@ ChronoAnalisi.functions = {
         return summary_representation;
     },
 
+
     generate_and_show_table: function (to_show) {
 
         var source = $("#motif-table-item-template").html();
@@ -336,7 +337,7 @@ ChronoAnalisi.functions = {
         var count = 0;
         for (var approximation in to_show) {
             var sax_approximation = to_show[approximation]["approximation"];
-            ChronoAnalisi.functions.render_glyph("#approximation-" + sax_approximation, 50, 40, sax_approximation, "#f6f7f7");
+            ChronoAnalisi.functions.render_glyph("#approximation-" + sax_approximation, 50, 40, sax_approximation, "none");
             var series_record = to_show[approximation].series;
 
             for (var series in series_record) {
@@ -354,6 +355,64 @@ ChronoAnalisi.functions = {
                 }
             }
         }
+    },
+
+    /**
+     * So inefficient. Should be using a map to get this, but it'll do for now.
+     * On a tight schedule.
+     * @param approximation
+     * @returns {*}
+     */
+    find_motif: function (approximation) {
+        for (var candidate in ChronoAnalisi.motifs) {
+            if (ChronoAnalisi.motifs[candidate].approximation == approximation) {
+                return ChronoAnalisi.motifs[candidate];
+            }
+        }
+        return None;
+    },
+
+    load_submotifs: function (approximation) {
+
+        console.log(approximation);
+        var motif = ChronoAnalisi.basket[approximation];
+        var approximation = motif.name;
+
+        var motif_object = ChronoAnalisi.functions.find_motif(approximation);
+
+
+        // Add a button to switch back to the network view.
+
+        // Now populate the table
+        var glyph_table = $('#glyph-table');
+        glyph_table.html('<table id="time-series-table" class="table table-striped"><thead><tr><th>Approximation</th><td>Mean</th><th>Kurtosis</th><th>Skewedness</th><th>Length</th>' +
+            '<th>Min</th><th>Max</th><th>Mean</th><th>Deviation</th></tr></thead><tbody></tbody></table>');
+        glyph_table.removeClass('hidden');
+        $('#network').addClass('hidden');
+
+        var series_detail_source = $("#time-series-template").html();
+        var series_detail_template = Handlebars.compile(series_detail_source);
+
+        var series_record = motif_object.series;
+        var count = 0;
+        for (var series in series_record) {
+            for (var position in series_record[series].positions) {
+                var record = series_record[series].positions[position];
+                record["count"] = count;
+
+                var series_html = series_detail_template(record);
+
+                $("#time-series-table > tbody:last").append(series_html);
+                ChronoAnalisi.graph.create_single_detail_graph("#plot-" + count,
+                    series_record[series].file, record.position, 80, 30);
+
+                count++;
+            }
+        }
+
+        // render the series parallel coordinates.
+
+
     },
 
     deleteModel: function (model_name) {

@@ -156,28 +156,19 @@
         </script>
 
         <script id="motif-table-item-template" type="text/x-handlebars-template">
-            <div id="table-stats" style="width: 650px; height: 381px; overflow-y: scroll">
-                <table class="table table-striped">
+            <div id="table-stats">
+                <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Approximation
-                        </td>
-                        <th>Mean
-                        </td>
-                        <th>Kurtosis
-                        </td>
-                        <th>Skewedness
-                        </td>
-                        <th>Length
-                        </td>
-                        <th>Min
-                        </td>
-                        <th>Max
-                        </td>
-                        <th>Mean
-                        </td>
-                        <th>Deviation
-                        </td>
+                        <th>Approximation</th>
+                        <th>Mean</th>
+                        <th>Kurtosis</th>
+                        <th>Skewedness</th>
+                        <th>Length</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                        <th>Mean</th>
+                        <th>Deviation</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -212,7 +203,7 @@
         <script id="time-series-template" type="text/x-handlebars-template">
             <tr id="time-series-row-{{ this.count }}">
                 <td>
-                    <div id="plot-{{ this.count }}" style="width: 50px; margin: 0 auto"></div>
+                    <div id="plot-{{ this.count }}" style="width: 80px; margin: 0 auto"></div>
                 </td>
                 <td>{{ this.metrics.Mean }}</td>
                 <td>{{ this.metrics.Kurtosis }}</td>
