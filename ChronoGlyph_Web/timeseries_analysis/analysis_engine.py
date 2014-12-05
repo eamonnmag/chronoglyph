@@ -60,28 +60,32 @@ class AnalysisEngine(object):
                     series_slice = time_series[
                                    int(position_key) * window_size: (int(position_key) + len(
                                        actual_approximation)) * window_size]
+                    if len(series_slice) > 0:
+                        series_metric = {
+                            "Kurtosis": round(scipy.stats.kurtosis(series_slice, fisher=False, bias=False), 3),
+                            "Skewedness": round(scipy.stats.skew(series_slice, bias=False), 3),
+                            "Length": round(len(actual_approximation), 3),
+                            "Max": round(numpy.max(series_slice), 3),
+                            "Min": round(numpy.min(series_slice), 3),
+                            "Mean": round(scipy.stats.nanmean(series_slice), 3),
+                            "Median": round(scipy.stats.nanmedian(series_slice), 3),
+                            "Deviation": round(scipy.stats.nanstd(series_slice), 3),
+                            "Std Error": round(scipy.stats.sem(series_slice), 3),
+                            "Pixel Saving Ptnl": round((w_s * len(actual_approximation) * window_size) / w_g,
+                                                       3),
+                            "Compression Ptnl.": round((len(actual_approximation) * window_size *
+                                                        aggregated_sets[approximation][
+                                                            "count"]) / aggregated_sets[approximation][
+                                                           "count"], 3),
+                            "Volatility": round(
+                                scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice), 3)}
 
-                    series_metric = {"Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
-                                     "Skewedness": scipy.stats.skew(series_slice, bias=False),
-                                     "Length": len(actual_approximation),
-                                     "Max": numpy.max(series_slice),
-                                     "Min": numpy.min(series_slice),
-                                     "Mean": scipy.stats.nanmean(series_slice),
-                                     "Median": scipy.stats.nanmedian(series_slice),
-                                     "Deviation": scipy.stats.nanstd(series_slice),
-                                     "Std Error": scipy.stats.sem(series_slice),
-                                     "Pixel Saving Ptnl": (w_s * len(actual_approximation) * window_size) / w_g,
-                                     "Compression Ptnl.": (len(actual_approximation) * window_size *
-                                                           aggregated_sets[approximation][
-                                                               "count"]) / aggregated_sets[approximation]["count"],
-                                     "Volatility": scipy.stats.nanstd(series_slice) / scipy.stats.nanmean(series_slice)}
-
-                    occurrences[approximation][file_id].append({"position":
-                                                                    [int(position_key) * window_size, (
-                                                                        int(position_key) + len(
-                                                                            actual_approximation)) * window_size],
-                                                                "metrics": series_metric})
-                    metrics[approximation].append(series_metric)
+                        occurrences[approximation][file_id].append({"position":
+                                                                        [int(position_key) * window_size, (
+                                                                            int(position_key) + len(
+                                                                                actual_approximation)) * window_size],
+                                                                    "metrics": series_metric})
+                        metrics[approximation].append(series_metric)
 
         for approximation in metrics:
             # aggregate the metrics we have, ignoring nans where they exist scipy.stats.nanmean(values)
@@ -159,8 +163,6 @@ class AnalysisEngine(object):
         :param window_size:
         :return:
         """
-        parallel_coords_files = OUTPUT_DIR + model_name + '_par_coords_' + str(window_size) + '.json'
-        parallel_file = open(parallel_coords_files, 'w')
         par_coords_data = []
         for approximation in aggregated_sets:
 
@@ -172,12 +174,15 @@ class AnalysisEngine(object):
                 record[metric["name"]] = metric["value"]
 
             par_coords_data.append(record)
+
+        parallel_coords_files = OUTPUT_DIR + model_name + '_par_coords_' + str(window_size) + '.json'
+        parallel_file = open(parallel_coords_files, 'w')
         parallel_file.write(simplejson.dumps(par_coords_data))
         parallel_file.close()
 
         return parallel_coords_files
 
-    def write_summaries(self, aggregated_sets, file_id, items, metrics, time_series, values, values_adv, window_size,
+    def write_summaries(self, aggregated_sets, file_id, items, metrics, time_series, values, window_size,
                         alphabet_size, approximation, mapping=None):
 
         a = 97
@@ -186,8 +191,6 @@ class AnalysisEngine(object):
         while count < alphabet_size:
             alphabet.append(chr(a + count))
             count += 1
-
-        print alphabet
 
         data_output_representation = {}
         data_output_representation["name"] = file_id
@@ -206,7 +209,7 @@ class AnalysisEngine(object):
 
         return aggregated_sets, time_series
 
-    def run_analysis(self, analysis_model):
+    def run_analysis(self, analysis_model, output_files=True):
 
         aggregated_sets = {}
         # calculates metrics for each glyph in each time series
@@ -216,6 +219,8 @@ class AnalysisEngine(object):
 
         alphabetSize = int(analysis_model.alphabet_size)
         window_size = int(analysis_model.window_size)
+
+        processing_times = {}
 
         swa = NormalizedSequenceAnalysis()
 
@@ -230,7 +235,7 @@ class AnalysisEngine(object):
             values_adv = []
             for line in f:
                 split_values = line.split("\t")
-                if len(split_values) > 1:
+                if len(split_values) > 2:
                     clean_string = re.sub('\r\n', '', split_values[2])
                     values.append(float(clean_string))
                     values_adv.append({'x': index, 'y': float(clean_string)})
@@ -253,13 +258,16 @@ class AnalysisEngine(object):
 
                 aggregated_sets, time_series = self.write_summaries(aggregated_sets, file.name, items, metrics,
                                                                     time_series,
-                                                                    values, values_adv, window_size, alphabetSize,
+                                                                    values, window_size, alphabetSize,
                                                                     x1String)
-                print 'It took ' + str(
-                    (datetime.now() - start_time)) + "ms to do that analysis using sliding window with " + str(
-                    total_values) + " time points"
+                # print 'It took ' + str(
+                # (datetime.now() - start_time)) + "ms to do that analysis using sliding window with " + str(
+                # total_values) + " time points on " + file.name
+
+                processing_times[file.name] = {"time": (datetime.now() - start_time), "point": len(values)}
 
             elif analysis_model.algorithm == 'max_repeats':
+
                 str1_unicode = unicode(x1String, 'utf-8', 'replace')
                 series_metadata[file_index] = {"series": str1_unicode, "name": file.name, "values": values,
                                                "values_adv": values_adv}
@@ -275,17 +283,16 @@ class AnalysisEngine(object):
             print 'Just analysed ' + file.name
 
         if analysis_model.algorithm == 'max_repeats' or analysis_model.algorithm == 'max_repeats_compressed':
-            start_time = datetime.now()
+            # start_time = datetime.now()
             rstr = Rstr_max()
 
             for series in series_metadata:
                 rstr.add_str(series_metadata[series]["series"])
             r = rstr.go()
             time_series_results = rstr.getFrequentItemsInCollection(r)
-
-            print 'It took ' + str(
-                (datetime.now() - start_time)) + "ms to do that analysis using maximal repeats with " + str(
-                total_values) + " time points"
+            #
+            # print 'It took ' + str(
+            # (datetime.now() - start_time)) + "ms to do that analysis using maximal repeats with " + str(total_values) + " time points"
 
             for time_series_result in time_series_results:
                 series_metadata_details = series_metadata[time_series_result]
@@ -299,7 +306,6 @@ class AnalysisEngine(object):
                                                                     time_series_results[time_series_result],
                                                                     metrics, time_series,
                                                                     series_metadata_details["values"],
-                                                                    series_metadata_details["values_adv"],
                                                                     window_size, alphabetSize,
                                                                     series_metadata_details["series"],
                                                                     mapping)
@@ -315,17 +321,20 @@ class AnalysisEngine(object):
         # for item in aggregated_sets:
         # print item
 
-        linked_graph_file = self.create_linked_graph(aggregated_sets, analysis_model.model_name, window_size)
-        analysis_model.network_file = linked_graph_file
+        if output_files:
+            linked_graph_file = self.create_linked_graph(aggregated_sets, analysis_model.model_name, window_size)
+            analysis_model.network_file = linked_graph_file
 
-        parallel_coords_files = self.create_parallel_coords_plot(aggregated_sets, analysis_model.model_name,
-                                                                 window_size)
-        analysis_model.parallel_coords_file = parallel_coords_files
+            parallel_coords_files = self.create_parallel_coords_plot(aggregated_sets, analysis_model.model_name,
+                                                                     window_size)
+            analysis_model.parallel_coords_file = parallel_coords_files
 
-        aggregated_ts_file = OUTPUT_DIR + analysis_model.model_name + '_time_series.json'
-        ts_file = open(aggregated_ts_file, 'w')
-        ts_file.write(simplejson.dumps(time_series))
-        ts_file.close()
+            aggregated_ts_file = OUTPUT_DIR + analysis_model.model_name + '_time_series.json'
+            ts_file = open(aggregated_ts_file, 'w')
+            ts_file.write(simplejson.dumps(time_series))
+            ts_file.close()
 
-        analysis_model.time_series_file = aggregated_ts_file
-        analysis_model.save()
+            analysis_model.time_series_file = aggregated_ts_file
+            analysis_model.save()
+        else:
+            return len(aggregated_sets), total_values

@@ -242,8 +242,11 @@ class Rstr_max:
 
                         elif int((offset_value - (series_count[approximation_id] * len(key)))) == int(
                                 last_stored_index):
-                            summarised_ngrams[approximation_id][key][last_stored_index]["length"] += len(key)
-                            summarised_ngrams[approximation_id][key][last_stored_index]["repeat_count"] += 1
+                            try:
+                                summarised_ngrams[approximation_id][key][last_stored_index]["length"] += len(key)
+                                summarised_ngrams[approximation_id][key][last_stored_index]["repeat_count"] += 1
+                            except Exception, e:
+                                print e
                         else:
                             # reset count since we are now looking for another pattern
                             summarised_ngrams[approximation_id][key][offset_value] = {"length": len(key),

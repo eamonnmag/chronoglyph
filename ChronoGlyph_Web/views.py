@@ -16,6 +16,11 @@ def get_collection_by_id(collection_id):
     return None
 
 
+def datasets(request):
+    return render_to_response("templates/datasets.html", {},
+                              context_instance=RequestContext(request))
+
+
 def analytics(request):
     collection_id = request.GET.get('collection', '')
 

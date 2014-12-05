@@ -18,14 +18,14 @@
 
     <div id="menu" class="pull-right">
         <ul>
-            <li id="build"><img src="{{ STATIC_URL }}assets/img/data.svg" height="37px"
-                                style="margin-top: 2px"></span>
+            <a href="/datasets"> <li id="build" class="{% block data_class %}{% endblock %}"><img src="{{ STATIC_URL }}assets/img/data.svg" height="37px"
+                                style="margin-top: 2px"></span></a>
                 <!--<ul class="sub-menu">-->
                 <!--<li><span class="icon-plus" style="font-size: 1.4em"></span> <br/>Select Data</li>-->
                 <!--<li><span class="icon-remove" style="font-size: 1.4em"></span><br/> Clear Data</li>-->
                 <!--</ul>-->
             </li>
-            <li class="bg-blue-1">
+            <li class="{% block grid_class %}{% endblock %}">
                 <div class="icon-th-large" style="font-size: 2.1em; color: #fff; margin-top: 8px"></div>
             </li>
             <li>
@@ -57,9 +57,7 @@
 
     <div id="footer-buttons">
         <ul>
-            <li class="bg-blue-1">About</li>
-            <li class="bg-blue-2">Team</li>
-            <li class="bg-blue-3">Contact</li>
+            <li class="bg-blue-1" onclick="$('#flp-basket').toggleClass('hidden')"><span id="selected_flp_count">0</span> Selected FLPs</li>
         </ul>
     </div>
 </div>

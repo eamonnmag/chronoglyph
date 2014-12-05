@@ -29,10 +29,18 @@ ChronoAnalisi.functions = {
 
         this.filterAndShowBasketView("yes");
         this.filterAndShowBasketView("no");
+        var selected = 0;
 
+        $('#basket-contents').html('');
         for (var key in ChronoAnalisi.basket) {
-            ChronoAnalisi.functions.render_glyph("#motif-" + ChronoAnalisi.basket[key].name, 30, 30, ChronoAnalisi.basket[key].name);
+            if (ChronoAnalisi.basket[key].decision == 1) {
+                selected++;
+                $('#basket-contents').append('<div class="basket-item" id="motif-' + ChronoAnalisi.basket[key].name + '"></div>');
+                ChronoAnalisi.functions.render_glyph("#motif-" + ChronoAnalisi.basket[key].name, 90, 60, ChronoAnalisi.basket[key].name, "none");
+            }
+
         }
+        $("#selected_flp_count").html(selected);
     },
 
     filterAndShowBasketView: function (selection) {
@@ -74,7 +82,6 @@ ChronoAnalisi.functions = {
             } else {
                 ChronoAnalisi.basket[id].decision *= -1;
             }
-
             ChronoAnalisi.functions.toggleHighlightNodeInGraph(name, false);
         }
 
@@ -169,7 +176,6 @@ ChronoAnalisi.functions = {
             var height = plot_data.height;
             for (var position in file_appearances.positions) {
                 var position_array = file_appearances.positions[position]["position"];
-                console.log(position_array);
                 d3.select("#" + file_appearances.file + " g").append("rect").attr("id", "highlight-" + file_appearances.file)
                     .attr("x", x_scale(position_array[0])).attr("y", 0)
                     .attr("width", (x_scale(position_array[1]) - x_scale(position_array[0])))
@@ -315,6 +321,9 @@ ChronoAnalisi.functions = {
     generate_and_show_table: function (to_show) {
 
         var source = $("#motif-table-item-template").html();
+        var series_detail_source = $("#time-series-template").html();
+
+        var series_detail_template = Handlebars.compile(series_detail_source);
         var template = Handlebars.compile(source);
 
         var html = template(to_show);
@@ -332,9 +341,15 @@ ChronoAnalisi.functions = {
 
             for (var series in series_record) {
                 for (var position in series_record[series].positions) {
-                    $("#plots-" + sax_approximation).append('<div class="plot pull-left"><p>' + series_record[series].file + '</p><div id="plot-' + count + '"></div></div>');
+                    var record = series_record[series].positions[position];
+                    record["count"] = count;
+
+                    var series_html = series_detail_template(record);
+
+                    $("#time-series-detail-" + sax_approximation + " > tbody:last").append(series_html);
                     ChronoAnalisi.graph.create_single_detail_graph("#plot-" + count,
-                        series_record[series].file, series_record[series].positions[position], 100);
+                        series_record[series].file, record.position, 50, 50);
+
                     count++;
                 }
             }
@@ -347,5 +362,4 @@ ChronoAnalisi.functions = {
             $("#" + model_name).remove()
         })
     }
-
 }

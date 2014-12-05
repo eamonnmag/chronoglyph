@@ -1,5 +1,8 @@
 {% extends 'templates/base.html' %}
 {% load template_utils %}
+
+{% block grid_class %}bg-blue-1{% endblock %}
+
 {% block content %}
 
 
@@ -89,6 +92,7 @@
     </div>
 
     {% include 'templates/modals/analysis.html' %}
+    {% include 'templates/modals/basket.html' %}
 {% endblock %}
 
 {% block end_additional %}
@@ -156,22 +160,34 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Approximation</td>
-                        <th>Mean</td>
-                        <th>Kurtosis</td>
-                        <th>Skewedness</td>
-                        <th>Length</td>
-                        <th>Min</td>
-                        <th>Max</td>
-                        <th>Mean</td>
-                        <th>Deviation</td>
+                        <th>Approximation
+                        </td>
+                        <th>Mean
+                        </td>
+                        <th>Kurtosis
+                        </td>
+                        <th>Skewedness
+                        </td>
+                        <th>Length
+                        </td>
+                        <th>Min
+                        </td>
+                        <th>Max
+                        </td>
+                        <th>Mean
+                        </td>
+                        <th>Deviation
+                        </td>
                     </tr>
                     </thead>
                     <tbody>
                     {{ #each this }}
-                    <tr id="motif-row-{{ this.approximation }}" onclick="$('#motif-row-detail-{{ this.approximation }}').toggleClass('hidden');">
-                        <td><div id="approximation-{{ this.approximation }}" style="width: 50px; margin: 0 auto"></div></td>
-                        <td>{{ this.Mean}}</td>
+                    <tr id="motif-row-{{ this.approximation }}"
+                        onclick="$('#motif-row-detail-{{ this.approximation }}').toggleClass('hidden');">
+                        <td>
+                            <div id="approximation-{{ this.approximation }}" style="width: 50px; margin: 0 auto"></div>
+                        </td>
+                        <td>{{ this.Mean }}</td>
                         <td>{{ this.Kurtosis }}</td>
                         <td>{{ this.Skewedness }}</td>
                         <td>{{ this.Length }}</td>
@@ -182,7 +198,9 @@
                     </tr>
                     <tr id="motif-row-detail-{{ this.approximation }}" class="series-detail hidden">
                         <td colspan="9">
-                        <div id="plots-{{ this.approximation }}" style="width: 90%; margin: 0 auto"></div>
+                            <table id="time-series-detail-{{ this.approximation }}" style="width: 660px">
+                                <tbody></tbody>
+                            </table>
                         </td>
                     </tr>
                     {{ /each }}
@@ -190,6 +208,23 @@
                 </table>
             </div>
         </script>
+
+        <script id="time-series-template" type="text/x-handlebars-template">
+            <tr id="time-series-row-{{ this.count }}">
+                <td>
+                    <div id="plot-{{ this.count }}" style="width: 50px; margin: 0 auto"></div>
+                </td>
+                <td>{{ this.metrics.Mean }}</td>
+                <td>{{ this.metrics.Kurtosis }}</td>
+                <td>{{ this.metrics.Skewedness }}</td>
+                <td>{{ this.metrics.Length }}</td>
+                <td>{{ this.metrics.Min }}</td>
+                <td>{{ this.metrics.Max }}</td>
+                <td>{{ this.metrics.Mean }}</td>
+                <td>{{ this.metrics.Deviation }}</td>
+            </tr>
+        </script>
+
 
         <script id="popup-options-template" type="text/x-handlebars-template">
             <ul>
@@ -229,8 +264,9 @@
 
     <script src="{{ STATIC_URL }}assets/js/lib/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+
     <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-select.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}assets/js/lib/d3.v3.min.js"></script>
     <script src="{{ STATIC_URL }}assets/js/lib/handlebars.js"></script>
     <script src="{{ STATIC_URL }}assets/js/chronanalisi.js"></script>
     <script src="{{ STATIC_URL }}assets/js/parallel-coords.js"></script>

@@ -1,0 +1,87 @@
+{% extends 'templates/base.html' %}
+
+{% block data_class %}bg-blue-1{% endblock %}
+{% block content %}
+
+
+    <div style="height: 100px; background-color: #f1f2f1; color: #aaa; margin-top: -10px; padding: 20px">
+        <h4 style="font-size: 1.7em">Data Sets <span class="btn btn-success pull-right"><span
+                class="glyphicon glyphicon-cloud-upload"></span> Upload New Dataset</span></h4>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div style="width: 900px; margin: 0 auto; margin-top: 50px" align="center">
+        <div class="data-item">
+            <div class="data-item-header">
+                ECG
+            </div>
+            <div class="clearfix"></div>
+            <div class="data-item-body">
+                <img src="{{ STATIC_URL }}assets/img/ecg_ds.png" width="275px"/>
+                <br/> <br/>
+                <strong>Datasets:</strong> 7<br/>
+                <strong>Total Timepoints:</strong> 35,001<br/><br/>
+            </div>
+            <div class="clearfix"></div>
+            <div class="data-item-footer">
+                <span class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete Dataset</span>
+                <a href="/?collection=ECG"><span class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Use Dataset</span></a>
+            </div>
+
+        </div>
+
+        <div class="data-item">
+            <div class="data-item-header">
+                Space Shuttle
+            </div>
+            <div class="clearfix"></div>
+            <div class="data-item-body">
+                <img src="{{ STATIC_URL }}assets/img/space_ds.png" width="275px"/>
+                <br/> <br/>
+                <strong>Datasets:</strong> 3<br/>
+                <strong>Total Timepoints:</strong> 15,003<br/><br/>
+            </div>
+            <div class="clearfix"></div>
+            <div class="data-item-footer">
+                <span class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete Dataset</span>
+                <a href="/?collection=SPACE"><span class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Use Dataset</span></a>
+            </div>
+
+        </div>
+
+
+        <div class="data-item">
+
+            <div style="padding-top: 150px; font-size: 2.3em; color: #aaa">
+                <span class="glyphicon glyphicon-plus"></span>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block end_additional %}
+    <style>
+        .content {
+            width: 100%;
+        }
+
+        .data-item {
+            float: left;
+            width: 31%;
+            background-color: #f6f7f6;
+            height: 360px;
+            margin: 1%;
+        }
+
+        .data-item-header {
+            height: 40px;
+            padding: 10px;
+            font-weight: bolder;
+            font-size: 1.5em;
+            color: #414241;
+        }
+    </style>
+{% endblock %}

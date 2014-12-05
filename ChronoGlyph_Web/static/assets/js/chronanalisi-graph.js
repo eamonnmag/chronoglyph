@@ -219,14 +219,14 @@ ChronoAnalisi.graph = {
         ).style({"stroke": "#95A5A5", "fill": "none", "stroke-linecap": "rounded", "opacity": .6});
     },
 
-    create_single_detail_graph: function (placement, file, record, small_plot_width) {
-        var plot_g = d3.select(placement).append("svg").attr("width", small_plot_width).attr("height", 100).append("g");
+    create_single_detail_graph: function (placement, file, record, small_plot_width, small_plot_height) {
+        var plot_g = d3.select(placement).append("svg").attr("width", small_plot_width).attr("height", small_plot_height).append("g");
 
-        var y = d3.scale.linear().domain([ChronoAnalisi.plots[file].min, ChronoAnalisi.plots[file].max]).range([100, 10]);
+        var y = d3.scale.linear().domain([ChronoAnalisi.plots[file].min, ChronoAnalisi.plots[file].max]).range([small_plot_height, 10]);
 
         var plot_data = ChronoAnalisi.plots[file].data;
 
-        ChronoAnalisi.graph.plot_detail_line(record["position"], small_plot_width, plot_g, plot_data, y);
+        ChronoAnalisi.graph.plot_detail_line(record, small_plot_width, plot_g, plot_data, y);
         ChronoAnalisi.graph.detail_graph_plot_zero_line(plot_g, y, small_plot_width);
     },
 
@@ -314,7 +314,7 @@ ChronoAnalisi.graph = {
 
                 ChronoAnalisi.functions.render_glyph("#popup-approximation-icon", 50, 80, d.approximation, "#ffffff");
                 var small_plot_width = 100;
-                ChronoAnalisi.graph.create_series_detail_graph("#popup-series", d, small_plot_width);
+                ChronoAnalisi.graph.create_series_detail_graph("#popup-series", d, small_plot_width, 100);
                 d3.select(".popup").style({"top": d3.event.pageY + "px", "left": d3.event.pageX + "px"});
                 d3.select(".popup").classed("hidden", false);
                 d3.select(".popup").transition().duration(500).style({"opacity": .95});

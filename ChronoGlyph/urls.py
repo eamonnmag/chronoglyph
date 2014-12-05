@@ -10,6 +10,6 @@ urlpatterns = patterns('',
     url(r'^delete_analysis/(.+)$', 'ChronoGlyph_Web.views.delete_analysis', name='run_analysis'),
     url(r'^get_file$', 'ChronoGlyph_Web.views.get_analysis_file', name='run_analysis'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^datasets$', 'ChronoGlyph_Web.views.datasets', name='home'),
     url(r'^admin/', include(admin.site.urls)),
 )
