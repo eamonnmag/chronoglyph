@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from django.utils import unittest
 import numpy
 import scipy
@@ -18,7 +19,7 @@ class TestSAX(unittest.TestCase):
         x3 = [15, 10, 12, 35, 0, 7, 8, 3, 4, 2, 5, 1, 4]
         x4 = [0, 0, 0, 2, 20, 50, 70, 30, 20, 10, 10, 0, -40]
 
-        #window size of 2 should lead to 12 strings representing each tuple.
+        # window size of 2 should lead to 12 strings representing each tuple.
 
         (x1String, x1Indices) = self.sax.to_letter_rep(x1)
         (x2String, x2Indices) = self.sax.to_letter_rep(x2)
@@ -76,7 +77,7 @@ class TestSAX(unittest.TestCase):
         self.assertEqual(approximation[0], 100)
         self.assertEqual(approximation[2], -100)
 
-        #Checks simple case where min occurs before max value
+        # Checks simple case where min occurs before max value
         frame = [-100, 10, 100]
         approximation = []
         self.sax.to_PAA_eSAX_extension(frame, approximation)
@@ -118,7 +119,7 @@ class TestSAX(unittest.TestCase):
 
         print 'x1String String is: ' + x1String
 
-        #tree = suffix_tree(x1String)
+        # tree = suffix_tree(x1String)
         #print tree_to_str(tree)
 
         rstr = Rstr_max()
@@ -168,7 +169,7 @@ class TestSAX(unittest.TestCase):
                 metrics[approximation].append(
                     {
                         "Kurtosis": scipy.stats.kurtosis(series_slice, fisher=False, bias=False),
-                        #"Kurtosis (Fisher)": scipy.stats.kurtosis(series_slice, fisher=True, bias=False),
+                        # "Kurtosis (Fisher)": scipy.stats.kurtosis(series_slice, fisher=True, bias=False),
                         "Skewedness": scipy.stats.skew(series_slice, bias=False),
                         "Length": len(approximation),
                         "Max": numpy.max(series_slice),
@@ -215,14 +216,13 @@ class TestSAX(unittest.TestCase):
 
 
     def generate_paper_slice_metrics(self, values):
-        #ADDITIONAL SLICES for paper stats
+        # ADDITIONAL SLICES for paper stats
         slices = {"slice1": {"data": values[938:1876], "results": {}},
                   "slice2": {"data": values[3001:3939], "results": {}},
                   "slice3": {"data": values[2970:4018], "results": {}},
                   "slice4": {"data": values[3969:4907], "results": {}},
                   "slice5": {"data": values[9969:10907], "results": {}},
                   "slice6": {"data": values[12953:13891], "results": {}}}
-
 
         for slice in slices:
             slice_data = slices[slice]["data"]
@@ -244,21 +244,24 @@ class TestSAX(unittest.TestCase):
 
     def testCaseOnLargeFiles(self):
 
-        files = [{"name": "ECG Data 1", "prepender": "ecg_data_1",
-                  "file": "../datasets/ECG_data/chfdb_chf01_275.txt"},
-                 {"name": "ECG Data 2", "prepender": "ecg_data_2",
-                  "file": "../datasets/ECG_data/chfdb_chf13_45590.txt"},
-                 {"name": "ECG Data 3", "prepender": "ecg_data_3",
-                  "file": "../datasets/ECG_data/ltstdb_20221_43.txt"},
-                 {"name": "ECG Data 4", "prepender": "ecg_data_4",
-                  "file": "../datasets/ECG_data/ltstdb_20321_240.txt"},
-                 {"name": "ECG Data 5", "prepender": "ecg_data_5",
-                  "file": "../datasets/ECG_data/mitdb__100_180.txt"},
-                 {"name": "ECG Data 6", "prepender": "ecg_data_6",
-                  "file": "../datasets/ECG_data/stdb_308_0.txt"},
-                 {"name": "ECG Data 7", "prepender": "ecg_data_7",
-                  "file": "../datasets/ECG_data/xmitdb_x108_0.txt"},
-        ]
+        # files = [{"name": "ECG Data 1", "prepender": "ecg_data_1",
+        # "file": "../datasets/ECG_data/chfdb_chf01_275.txt"},
+        #          {"name": "ECG Data 2", "prepender": "ecg_data_2",
+        #           "file": "../datasets/ECG_data/chfdb_chf13_45590.txt"},
+        #          {"name": "ECG Data 3", "prepender": "ecg_data_3",
+        #           "file": "../datasets/ECG_data/ltstdb_20221_43.txt"},
+        #          {"name": "ECG Data 4", "prepender": "ecg_data_4",
+        #           "file": "../datasets/ECG_data/ltstdb_20321_240.txt"},
+        #          {"name": "ECG Data 5", "prepender": "ecg_data_5",
+        #           "file": "../datasets/ECG_data/mitdb__100_180.txt"},
+        #          {"name": "ECG Data 6", "prepender": "ecg_data_6",
+        #           "file": "../datasets/ECG_data/stdb_308_0.txt"},
+        #          {"name": "ECG Data 7", "prepender": "ecg_data_7",
+        #           "file": "../datasets/ECG_data/xmitdb_x108_0.txt"},
+        # ]
+
+        files = [{"name": "Efficiency", "prepender": "efficiency_1",
+                  "file": "/Users/eamonnmaguire/Downloads/efficiency.csv"}]
 
         #files = [{"name": "Space_Shuttle", "prepender": "shuttle_1",
         #          "file": "../../datasets/Space_Shuttle/TEK17.txt"},
@@ -294,9 +297,9 @@ class TestSAX(unittest.TestCase):
             values = []
             values_adv = []
             for line in f:
-                split_values = line.split("\t")
+                split_values = line.split(",")
                 if len(split_values) > 1:
-                    clean_string = re.sub('\r\n', '', split_values[2])
+                    clean_string = re.sub('\r\n', '', split_values[1])
                     values.append(float(clean_string))
                     values_adv.append({'x': index, 'y': float(clean_string)})
                 else:
@@ -304,13 +307,30 @@ class TestSAX(unittest.TestCase):
                     values_adv.append({'x': index, 'y': float(line)})
                 index += 1
 
-            window_size = 5
+            window_size = 200
 
             print 'There are ' + str(len(values)) + " values in this series."
 
             self.sax = saxpy.SAX(eSAX=False, wordSize=len(values) / window_size, alphabetSize=6)
             # We want to test the basic example. A time series aggregated.
+            start_time = datetime.now()
+
             (x1String, x1Indices) = self.sax.to_letter_rep(values)
+
+            total_time = (datetime.now() - start_time)
+            total_milliseconds = int(total_time.total_seconds() * 1000)
+
+            print 'Analysing with (w=' + str(window_size) + ', a=' + str(6) + ') took ' + str(
+                total_milliseconds) + ' ms'
+
+            print 'Approximation size is ' + str(len(x1String))
+            print x1String
+
+            out_file = open("timeseries-obj.json", 'w+')
+
+            obj = {"time-series": [{"series": values, "max": 1, "min": -1, "file": 'test.txt'}]}
+            out_file.write(simplejson.dumps(obj))
+            out_file.close()
 
             #tree = suffix_tree(x1String)
             #print tree_to_str(tree)
@@ -323,7 +343,7 @@ class TestSAX(unittest.TestCase):
             r = rstr.go()
 
             #rstr.outputResult(r)
-            items = rstr.getFrequentItems(r, 50)
+            items = rstr.getFrequentItemsInCollection(r)
 
             data_output_representation = {}
             data_output_representation["name"] = file["name"]
@@ -381,7 +401,7 @@ class TestSAX(unittest.TestCase):
                 key_1 = approximation + approximation2
                 key_2 = approximation2 + approximation
                 if len(approximation) == len(approximation2) and approximation != approximation2 and (
-                        not key_1 in seen and not key_2 in seen):
+                            not key_1 in seen and not key_2 in seen):
                     if aggregated_sets[approximation]["count"] > count_cut_off and aggregated_sets[approximation2][
                         "count"] > count_cut_off:
                         distance = self.sax.compare_strings(approximation, approximation2) * 100

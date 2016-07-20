@@ -20,6 +20,10 @@ def datasets(request):
     return render_to_response("templates/datasets.html", {},
                               context_instance=RequestContext(request))
 
+def get_compressed(request):
+    return render_to_response("templates/compress.html", {},
+                              context_instance=RequestContext(request))
+
 
 def analytics(request):
     collection_id = request.GET.get('collection', '')
